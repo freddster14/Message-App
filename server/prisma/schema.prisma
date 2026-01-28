@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  name            String    
+  passHashed      String
+  bio             String?
+  avatarUrl       String?
+  sentInvites     Invite[]  @relation("InviteSender")
+  receivedInvites Invite[]  @relation("InviteRecipient")
+  sentMessages    Message[]
+  chatMemberships ChatMember[]
+
+}
+
+model Chat {
+  id        Int             @id @default(autoincrement())
+  name      String?
+  isGroup   Boolean         @default(false)
+  members   ChatMember[]
+  messages  Message[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+
+model ChatMember {
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  chat      Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId    Int
+
+  lastMessageId   Int
+  joinedAt        DateTime  @default(now())
+
+  @@id([userId, chatId]) // Prevent duplicate chats
+  @@index([userId]) // Fast lookup for all users' chats
+  @@index([chatId]) // Fast lookup for users in chat
+}
+
+model Message {
+  id        Int     @id @default(autoincrement())
+  text      String  @db.Text
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  Int
+  chat      Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId    Int
+  createdAt DateTime  @default(now())
+
+  @@index([authorId, chatId]) // Fast lookup recent messages
+}
+
+model Invite {
+  id    Int     @id @default(autoincrement())
+  
+  sender    User    @relation("InviteSender", fields: [senderId], references: [id], onDelete: Cascade)
+  senderId  Int
+
+  recipient   User  @relation("InviteRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  recipientId Int
+
+  createdAt DateTime  @default(now())
+  expiresAt DateTime  @default(dbgenerated("NOW() + '7 days'"))
+
+  @@unique([senderId, recipientId]) // Prevent duplicate inv
+  @@index([recipientId]) // User's pending inv
+} 

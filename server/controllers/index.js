@@ -7,12 +7,11 @@ import jwt from "jsonwebtoken";
 const signUp = async (req, res, next) => {
   const { email, password } = req.body
 
-  const existingUser = await prisma.user.find({ where: { email }});
+  const existingUser = await prisma.user.findUnique({ where: { email }});
   if(existingUser) return res.status(409).json({ msg: 'Email in use'});
 
-  const hashedPass = await bcrypt.hash(password, 10);
-
   try {
+    const hashedPass = await bcrypt.hash(password, 10);
     const name = email.split('@')[0];
     const newUser = await prisma.user.create({
       data: {
@@ -24,13 +23,20 @@ const signUp = async (req, res, next) => {
     const token = jwt.sign(
       { userId: newUser.id, userName: newUser.name }, 
       process.env.SECRET,
-      { expiresIn: 1000 * 60 * 10 } // 15min
+      { expiresIn: "15m" }
     );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 15 * 60 * 1000
+    })
 
     res.status(201).json({
       user: {
         id: newUser.id,
-        name: newUser.name
+        name: newUser.name,
       },
       token
     });
@@ -40,30 +46,54 @@ const signUp = async (req, res, next) => {
   }
 }
 
-// validate & add multer
-const update = async (req, res, next) => {
-  const { name, bio } = req.body
-  const avatarUrl = req.file || "";
-  try {
-    const user = await prisma.user.update({
-      where: {
-        id: req.user.id,
-      },
-      data: {
-        name,
-        bio,
-        avatarUrl
-      },
+
+export const later = async (req, res, next) => {
+   const token = jwt.sign(
+      { userId: req.user.id, userName: req.user.name }, 
+      process.env.SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days
     });
-    const token = jwt.sign({ userId: newUser.id, userName: newUser.name }, process.env.SECRET, { expiresIn: "5d" })
+    res.status(201).json({
+      user: {
+        id: newUser.id,
+        name: newUser.name,
+      }
+    });
+}
+
+// validate
+export const signIn = async (req, res, next) => {
+  const { email, password } = req.body;
+  try {
+    const user = await prisma.user.findUnique({ where: { email }});
+    if(!user) return res.status(404).json({ msg: 'User not found' });
+    
+    const isMatch = await bcrypt.compare(password, user.passHashed);
+    if(!isMatch) return res.status(401).json({ msg: 'Invalid credentials' });
+    
+    const token = jwt.sign({ userId: user.id, userName: user.name }, process.env.SECRET, { expiresIn: "5d" });
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", 
+      sameSite: "strict",
+      maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days
+    });
     res.status(201).json({
       user: {
         id: user.id,
         name: user.name
-      },
-      token
+      }
     });
   } catch (error) {
     next(error);
   }
 }
+

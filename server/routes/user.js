@@ -3,10 +3,10 @@ import * as controller from "../controllers/user.js";
 import verifyToken from "../middleware/token.js";
 const user = express.Router();
 
-user.get('/', controller.user);
+user.get('/', verifyToken, controller.user);
 
-user.post('/', controller.create);
+user.post('/update', verifyToken, controller.update)
 
-user.delete('/:id', verifyToken, controller.delete);
+user.delete('/', verifyToken, controller.remove);
 
 export default user;

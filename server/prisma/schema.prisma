@@ -38,7 +38,7 @@ model ChatMember {
   chat      Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId    Int
 
-  lastMessageId   Int
+  lastMessageId   Int?
   joinedAt        DateTime  @default(now())
 
   @@id([userId, chatId]) // Prevent duplicate chats

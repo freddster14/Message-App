@@ -38,8 +38,9 @@ model ChatMember {
   chat      Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId    Int
 
-  lastMessageId   Int?
-  joinedAt        DateTime  @default(now())
+
+  lastReadMessageId   Int?
+  joinedAt            DateTime  @default(now())
 
   @@id([userId, chatId]) // Prevent duplicate chats
   @@index([userId]) // Fast lookup for all users' chats

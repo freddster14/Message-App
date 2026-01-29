@@ -1,10 +1,12 @@
 import "dotenv/config";
 import express from "express";
-import index from "./routes";
-import user from "./routes/user";
-import chat from "./routes/chat";
-import message from "./routes/message";
-import invite from "./routes/invite";
+import cors from "cors"
+import index from "./routes/index.js";
+import user from "./routes/user.js";
+import chat from "./routes/chat.js";
+import message from "./routes/message.js";
+import invite from "./routes/invite.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -12,7 +14,7 @@ app.use(cors({
   origin: process.env.CLIENT_URL,
   credentials: true,
 }));
-
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 

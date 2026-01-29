@@ -1,8 +1,8 @@
-import { prisma } from "../prisma/client";
+import { prisma } from "../prisma/client.js";
 
 export const create = async (req, res) => {
   const { chatId, text } = req.body;
-  
+  if(text === "") return res.status(400).json({ msg: "Enter message" })
   try {
     const message = await prisma.message.create({
       include: {

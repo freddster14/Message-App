@@ -4,8 +4,9 @@ import verifyToken from "../middleware/token.js";
 const user = express.Router();
 
 user.get('/', verifyToken, controller.user);
+//user.get('/:id', verifyToken, controller.profile);
 
-user.post('/update', verifyToken, controller.update)
+user.post('/update', verifyToken, controller.update);
 
 user.delete('/', verifyToken, controller.remove);
 

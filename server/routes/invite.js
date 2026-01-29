@@ -10,6 +10,6 @@ invite.post('/', verifyToken, controller.create);
 invite.post('/accept', verifyToken, controller.accept);
 
 invite.delete('/decline', verifyToken, controller.decline)
-invite.delete('/delete', verifyToken, controller.remove)
+invite.delete('/', verifyToken, controller.remove)
 
 export default invite;

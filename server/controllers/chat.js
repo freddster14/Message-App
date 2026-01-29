@@ -22,14 +22,16 @@ export const chatInfo = async (req, res, next) => {
   try {
     const member = await prisma.chatMember.findUnique({
       where: {
-        userId: req.user.id,
-        chatId: parseInt(chatId),
+        userId_chatId: {
+          userId: req.user.id,
+          chatId: parseInt(chatId),
+        }
       },
     });
     if(!member) return res.status(400).json({ msg: "Access denied" });
     const chat = await prisma.chat.findUnique({
       where: { 
-        chatId: parseInt(chatId),
+        id: parseInt(chatId),
       },
       include: {
         messages: {
@@ -59,12 +61,14 @@ export const chatInfo = async (req, res, next) => {
         },
       },
     });
-    
-    if(chat.messages[-1].id > member.lastReadMessageId) {
+    //update last read message
+    if(chat.messages.length > 0 && chat.messages[0].id > member.lastReadMessageId) {
       await prisma.chatMember.update({
         where: {
-          userId: req.user.id,
-          chatId,
+          userId_chatId: {
+            userId: req.user.id,
+            chatId,
+          }
         },
         data: {
           lastReadMessageId: chat.messages[-1].id
@@ -91,13 +95,15 @@ export const remove = async (req, res) => {
   try {
     const member = await prisma.chatMember.findUnique({
        where: {
-        userId: req.user.id,
-        chatId: parseInt(chatId),
+        userId_chatId: {
+          userId: req.user.id,
+          chatId: parseInt(chatId),
+        }
       },
     });
     if(!member) return res.status(400).json({ msg: "Access denied" });
 
-    await prisma.chat.delete({ where: { chatId: parseInt(chatId) }});
+    await prisma.chat.delete({ where: { id: parseInt(chatId) }});
     res.status(200).json({ msg: "Deleted" }); 
   } catch (error) {
     console.error(error);

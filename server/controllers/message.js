@@ -6,7 +6,7 @@ export const create = async (req, res) => {
   try {
     const message = await prisma.message.create({
       include: {
-        user: {
+        author: {
           select: {
             id: true,
             name: true,
@@ -22,15 +22,18 @@ export const create = async (req, res) => {
     });
     await prisma.chatMember.update({
       where: {
-        userId: req.user.id,
-        chatId: parseInt(chatId),
+        userId_chatId: {
+          userId: req.user.id,
+          chatId: parseInt(chatId),
+        }
       },
       data: {
         lastReadMessageId: message.id,
       }
     })
-    res.status({ message });
+    res.status(200).json({ message });
   } catch (error) {
-    
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
   }
 }

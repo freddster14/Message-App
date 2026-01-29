@@ -13,7 +13,8 @@ export const create = async (req, res, next) => {
     });
     res.status(200).json({ msg: "Sent" });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
   }
 }
 
@@ -36,7 +37,8 @@ export const received = async (req, res, next) => {
     const formattedInvites = invites.map(i => i.sender);
     res.status(200).json({ invites: formattedInvites });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
   }
 }
 
@@ -54,10 +56,11 @@ export const sent = async (req, res, next) => {
         }
       }
     });
-    const formattedInvites = invites.map(i => i.sender);
+    const formattedInvites = invites.map(i => i.recipient);
     res.status(200).json({ invites: formattedInvites });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
   }
 }
 
@@ -65,10 +68,12 @@ export const accept = async (req, res, next) => {
   const { senderId } = req.body;
   try {
     const invite = await prisma.invite.findUnique({
+      where: {
        senderId_recipientId: {
           senderId,
           recipientId: req.user.id,
         },
+      },
     });
     if(!invite) return res.status(400).json({ msg: 'Invite does not exist' })
     await prisma.invite.delete({
@@ -94,7 +99,8 @@ export const accept = async (req, res, next) => {
     });
     res.status(200).json({ msg: "Accepted" })
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
   }
 }
 
@@ -119,7 +125,8 @@ export const decline = async (req, res, next) => {
     res.status(200).json({ msg: "Declined" })
 
   } catch (error) {
-    next(error); 
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
   }
   
 }
@@ -128,22 +135,26 @@ export const remove = async (req, res, next) => {
   const { recipientId } = req.body;
   try {
     const invite = await prisma.invite.findUnique({
-       senderId_recipientId: {
-          senderId: req.user.id,
-          recipientId,
+      where: {
+          senderId_recipientId: {
+            senderId: req.user.id,
+            recipientId: parseInt(recipientId),
         },
+      }
+     
     });
     if(!invite) return res.status(400).json({ msg: 'Invite does not exist' })
     await prisma.invite.delete({
       where: {
         senderId_recipientId: {
           senderId: req.user.id,
-          recipientId,
+          recipientId: parseInt(recipientId),
         },
       },
     });
     res.status(200).json({ msg: "Removed" })
   } catch (error) {
-    next(error); 
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
   }
 }

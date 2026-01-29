@@ -6,7 +6,7 @@ const chat = express.Router();
 chat.get('/', verifyToken, controller.chats);
 chat.get('/:chatId', verifyToken, controller.chatInfo);
 
-chat.delete('/:id', verifyToken, controller.remove);
+chat.delete('/:chatId', verifyToken, controller.remove);
 
 
 export default chat;

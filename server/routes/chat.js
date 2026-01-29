@@ -4,10 +4,9 @@ import verifyToken from "../middleware/token.js";
 const chat = express.Router();
 
 chat.get('/', verifyToken, controller.chats);
-chat.get('/:chatId', verifyToken, controller.chatMessages);
-chat.get('/info', verifyToken, controller.info);
+chat.get('/:chatId', verifyToken, controller.chatInfo);
 
-chat.delete('/:id', verifyToken, controller.delete);
+chat.delete('/:id', verifyToken, controller.remove);
 
 
 export default chat;

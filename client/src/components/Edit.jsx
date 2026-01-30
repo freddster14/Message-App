@@ -25,7 +25,7 @@ export default function Edit({ props }) {
       }
       const updatedUser = await apiFetch('/user/update', options );
       setUser(updatedUser);
-      navigate('/chat')
+      navigate('/dashboard')
     } catch (error) {
       setError(error.message)
     }

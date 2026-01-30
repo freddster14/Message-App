@@ -71,10 +71,8 @@ export const later = async (req, res, next) => {
       maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days
     });
     res.status(201).json({
-      user: {
-        id: req.user.id,
-        name: req.user.name,
-      }
+      id: req.user.id,
+      name: req.user.name,
     });
 }
 
@@ -99,10 +97,8 @@ export const signIn = [
         maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days
       });
       res.status(201).json({
-        user: {
-          id: user.id,
-          name: user.name
-        }
+        id: user.id,
+        name: user.name
       });
     } catch (error) {
       next(error);

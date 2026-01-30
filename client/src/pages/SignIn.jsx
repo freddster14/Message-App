@@ -28,7 +28,7 @@ export default function SignIn() {
       const user = await apiFetch('/sign-in', options);
       console.log(user)
       setUser(user);
-      navigate('/chat')
+      navigate('/dashboard')
     } catch (error) {
       setErr(error.message);
     } finally {

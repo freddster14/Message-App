@@ -4,6 +4,7 @@ import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
 import Home from "../pages/Home";
 import Dashboard from "../pages/Dashboard";
+import apiFetch from "../api/client";
 
 const router = createBrowserRouter([
   {
@@ -11,7 +12,7 @@ const router = createBrowserRouter([
     Component: Root,
     children: [
       { index: true, Component: Home },
-      { path: "/:name", Component: Dashboard }
+      { path: "dashboard", Component: Dashboard, loader: async () => await apiFetch('/chat')   }
     ]
   },
   { path: "/sign-in", Component: SignIn },

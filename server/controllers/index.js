@@ -16,14 +16,22 @@ export const signUp = [
 
     try {
       const hashedPass = await bcrypt.hash(password, 10);
-      const name = email.split('@')[0];
-      const newUser = await prisma.user.create({
+      const tempUser = await prisma.user.create({
         data: {
           email,
           passHashed: hashedPass,
-          name,
         }
       });
+      const name = email.split('@')[0] + `${tempUser.id}`;
+      const newUser = await prisma.user.update({
+        where: {
+          id: tempUser.id
+        },
+        data: {
+          name,
+        }
+      })
+      
       const token = jwt.sign(
         { userId: newUser.id, userName: newUser.name }, 
         process.env.SECRET,
@@ -38,10 +46,8 @@ export const signUp = [
       })
 
       res.status(201).json({
-        user: {
-          id: newUser.id,
-          name: newUser.name,
-        }
+        id: newUser.id,
+        name: newUser.name,
       });
       
     } catch (error) {
@@ -79,7 +85,7 @@ export const signIn = [
     const { email, password } = req.body;
     try {
       const user = await prisma.user.findUnique({ where: { email }});
-      if(!user) return res.status(404).json({ msg: 'User not found' });
+      if(!user) return res.status(401).json({ msg: 'User not found' });
       
       const isMatch = await bcrypt.compare(password, user.passHashed);
       if(!isMatch) return res.status(401).json({ msg: 'Invalid credentials' });

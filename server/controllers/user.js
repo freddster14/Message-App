@@ -9,23 +9,32 @@ export const user = async (req, res, next) => {
     const userData = await prisma.user.findUnique({
       where: { id: req.user.id },
       select: {
+        id: true,
         email: true,
         name: true,
         avatarUrl: true,
         bio: true,
       }
     });
-    res.status(200).json({ userData })
+    if(!user) return res.status(400).json({ msg: "No user"})
+    res.status(200).json({
+      id: userData.id,
+      email: userData.email,
+      name: userData.name,
+      avatarUrl: userData.avatarUrl,
+      bio: userData.bio,
+    })
   } catch (error) {
     next(error);
   }
 }
 
-// validate & add multer
+// validate & add multer & cloudinary
 export const update = async (req, res, next) => {
   const { name, bio } = req.body
-  const avatarUrl = req.file || "";
+  const avatarUrl = req.file.originalname.replace(/\.[^/.]+$/, '') || ""; //remove img extension
   try {
+
     const user = await prisma.user.update({
       where: {
         id: req.user.id,

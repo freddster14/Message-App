@@ -13,6 +13,22 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+input[type="file"] {
+  display: none;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  /* Add hover effect */
+  transition: background-color 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-color: #0056b3;
+}
+
 a {
   font-weight: 500;
   color: #646cff;

@@ -1,9 +1,15 @@
 import Nav from '../components/Nav'
 import { Outlet } from 'react-router'
+import { useAuth } from '../context/AuthContext'
 
 export default function Root() {
-  <>
-    <Nav />
-    <Outlet />
-  </>
+  const { loading } = useAuth();
+  if(loading) return null;
+  return(
+      <>
+        <Nav />
+        <Outlet />
+      </>
+  )
+
 }

@@ -1,10 +1,19 @@
 import { Link } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import Inbox from "./Inbox";
-import { useEffect, useState } from "react";
 import NewChat from "./NewChat";
+import apiFetch from "../api/client";
+
 export default function Nav() {
   const { user } = useAuth()
+
+  const handleLogout = async () => {
+    // try {
+    //   await apiFetch('/logout', { method: 'POST' })
+    // } catch (error) {
+
+    // }
+  }
 
   return (
     <nav>
@@ -14,6 +23,7 @@ export default function Nav() {
       <h1>{user.name}</h1>
       <NewChat />
       <Inbox />
+      <button onClick={handleLogout}></button>
     </div>
     : <div>
        <Link to='/sign-up'>Sign Up</Link>

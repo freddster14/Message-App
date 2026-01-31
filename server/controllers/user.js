@@ -2,8 +2,6 @@ import "dotenv/config";
 import { prisma } from "../prisma/client.js"
 import jwt from "jsonwebtoken";
 
-
-
 export const user = async (req, res, next) => {
   try {
     const userData = await prisma.user.findUnique({
@@ -64,12 +62,57 @@ export const update = async (req, res, next) => {
   }
 }
 
-
 export const remove = async (req, res, next) => {
   try {
     await prisma.user.delete({ where: { id: req.user.id }});
     res.status(200).json({ msg: "Deleted" });
   } catch (error) {
     next(error);
+  }
+}
+
+export const search = async (req, res, next) => {
+  const { searched } = req.params;
+  try {
+    const userChatsId = await prisma.chatMember.findMany({
+      where: {
+        userId: req.user.id,
+      },
+      select: {
+        chatId: true,
+      }
+    });
+    console.log(userChatsId)
+    const users = await prisma.user.findMany({
+      where: {
+        NOT: {
+          id: {
+            equals: req.user.id
+          }
+        },
+        name: {
+          contains: searched,
+        },
+        AND : {
+          chatMemberships: {
+            none: {
+              chatId: {
+                notIn: userChatsId
+              }
+            }
+          }
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        avatarUrl: true,
+        bio: true,
+      }
+    });
+    console.log(users)
+    res.status(200).json({ users })
+  } catch (error) {
+    console.error(error)
   }
 }

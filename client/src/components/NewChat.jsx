@@ -13,7 +13,7 @@ export default function NewChat() {
     const find = setTimeout(async () => {
       try {
         const data = await apiFetch(`/user/${searched}`)
-        setUsers(data);
+        setUsers(data.users);
       } catch (error) {
         setError(error.message);
       }
@@ -32,7 +32,6 @@ export default function NewChat() {
       setError(error);
     }
   }
-
   return(
     <>
       <div>

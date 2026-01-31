@@ -2,7 +2,7 @@ import { prisma } from "../prisma/client.js";
 
 export const chats = async (req, res, next) => {
   try {
-    const chats = await prisma.chatMember.findMany({
+    const allChats = await prisma.chatMember.findMany({
       where: {
         userId: req.user.id,
       },
@@ -10,7 +10,9 @@ export const chats = async (req, res, next) => {
         chat: true,
       },
     });
-    res.status(200).json({ chats });
+    console.log(allChats)
+    const formattedChat = allChats.map(c => console.log(c))
+    res.status(200).json({ chats: allChats });
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: 'Server error' });

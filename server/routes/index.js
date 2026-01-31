@@ -7,5 +7,5 @@ const index = express.Router();
 index.post('/sign-in', controller.signIn);
 index.post('/sign-up', controller.signUp);
 index.post('/later', verifyToken, controller.later);
-
+index.post('/logout', verifyToken, controller.logout)
 export default index;

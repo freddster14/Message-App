@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import apiFetch from "../api/client";
 
@@ -8,8 +8,10 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
   const [err, setErr] = useState("");
-  const { setUser } = useAuth();
+  const { setUser, user } = useAuth();
   const navigate = useNavigate();
+
+  if(user) return <Navigate to="/dashboard" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();

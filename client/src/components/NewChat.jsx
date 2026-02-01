@@ -1,27 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import apiFetch from "../api/client";
-import { useNavigate } from "react-router";
 
-export default function NewChat() {
-  const [searched, setSearched] = useState("");
-  const [users, setUsers] = useState([]);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+export default function NewChat({ u, setError }) {
+  const [isActive, setIsActive] = useState(false);
+  const [value, setValue] = useState("Send Invite");
 
-  useEffect(() => {
-    if(searched === "") return;
-    const find = setTimeout(async () => {
-      try {
-        const data = await apiFetch(`/user/${searched}`)
-        setUsers(data.users);
-      } catch (error) {
-        setError(error.message);
-      }
-    }, 3000)
-    return () => clearTimeout(find)
-  }, [searched])
-
-  const handleInvite = async (recipientId) => {
+  const handleInvite = async (e, recipientId) => {
+    e.preventDefault();
+    if(isActive) return;
+    setIsActive(true);
+    setValue("Invited");
     try {
       const options = {
         method: "POST",
@@ -32,27 +20,14 @@ export default function NewChat() {
       setError(error);
     }
   }
-  return(
+  return (
     <>
-      <div>
-        <p>search</p>
-        <input type="text" value={searched} onChange={(e) => setSearched(e.target.value)} />
-      </div>
-      {users.length > 0 && error === "" 
-      ? <div>
-        {users.map(u => (
-          <div key={"u" + u.id}>
-            {u.avatarUrl !== "" ? <img></img> : <div>{u.name[0]} img</div>}
-            <div>
-              <p>{u.name}</p>
-              <p>{u.bio}</p>
-            </div>
-            <button onClick={() => handleInvite(u.id)}>Send Invite</button>
-          </div>
-        ))}
-      </div> 
-      : <div>{error}</div>
-    }
+      {u.avatarUrl !== "" ? <img src={u.avatarUrl}></img> : <div>{u.name[0]} img</div>}
+        <div>
+          <p>{u.name}</p>
+          <p>{u.bio}</p>
+        </div>
+        <button onClick={(e) => handleInvite(e, u.id)}>{value}</button>
     </>
   )
 }

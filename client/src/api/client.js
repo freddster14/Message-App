@@ -9,12 +9,14 @@ export default async function apiFetch(url, options) {
     });
     
     const data = await res.json();
-    if(!res.ok) {
-      throw new Error(data.msg || res.statusText)
+
+    if (!res.ok) {
+      throw new Error(data.msg || 'Server');
     }
+
     return data;
   } catch (error) {
     console.error(error);
-    throw error
+    throw error;
   }
 }

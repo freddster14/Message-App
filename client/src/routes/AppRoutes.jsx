@@ -5,14 +5,17 @@ import SignUp from "../pages/SignUp";
 import Home from "../pages/Home";
 import Dashboard from "../pages/Dashboard";
 import apiFetch from "../api/client";
+import ErrorBoundary from "../pages/Error";
+import ProtectedRoute from "./ProtectedRoutes";
 
 const router = createBrowserRouter([
   {
     path: "/",
     Component: Root,
+    ErrorBoundary: ErrorBoundary,
     children: [
       { index: true, Component: Home },
-      { path: "dashboard", Component: Dashboard, loader: async () => await apiFetch('/chat')   }
+      { path: "dashboard", element: <ProtectedRoute><Dashboard /></ProtectedRoute>  },
     ]
   },
   { path: "/sign-in", Component: SignIn },

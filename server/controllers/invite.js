@@ -5,6 +5,28 @@ export const create = async (req, res, next) => {
   try {
     const recipient = await prisma.user.findUnique({ where: { id: parseInt(recipientId) }});
     if(!recipient) return res.status(200).json({ msg: "User does not exist" });
+    const existingInvite = await prisma.invite.findUnique({
+      where: {
+        senderId_recipientId: {
+          senderId: req.user.id,
+          recipientId: parseInt(recipientId),
+        }
+      }
+    });
+    if(existingInvite) {
+      await prisma.invite.update({
+        where: {
+          senderId_recipientId: {
+            senderId: req.user.id,
+            recipientId: parseInt(recipientId),
+          }
+        },
+        data: {
+          createdAt: new Date(),
+        },
+      });
+      return res.status(200).json({ msg: "Invite renewed" });
+    }
     await prisma.invite.create({
       data: {
         senderId: req.user.id,

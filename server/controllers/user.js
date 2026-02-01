@@ -30,7 +30,7 @@ export const user = async (req, res, next) => {
 // validate & add multer & cloudinary
 export const update = async (req, res, next) => {
   const { name, bio } = req.body
-  const avatarUrl = req.file.originalname.replace(/\.[^/.]+$/, '') || ""; //remove img extension
+  const avatarUrl = req.file?.originalname.replace(/\.[^/.]+$/, '') || ""; //remove img extension
   try {
 
     const user = await prisma.user.update({
@@ -110,6 +110,8 @@ export const search = async (req, res, next) => {
         bio: true,
       }
     });
+
+    
     console.log(users)
     res.status(200).json({ users })
   } catch (error) {

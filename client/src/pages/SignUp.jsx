@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Link } from "react-router";
+import { Link, Navigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import apiFetch from "../api/client";
 import Edit from "../components/Edit";
@@ -11,7 +11,10 @@ export default function SignUp() {
   const [confirm, setConfirm] = useState("");
   const [err, setErr] = useState("");
   const [edit, setEdit] = useState(false);
-  const { setUser } = useAuth();
+  const { user, setUser } = useAuth();
+
+  if(user) return <Navigate to="/dashboard" replace />;
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -7,12 +7,37 @@ export const chats = async (req, res, next) => {
         userId: req.user.id,
       },
       include: {
-        chat: true,
+        chat: {
+          include: {
+            members: {
+              where: {
+                userId: {
+                  not: req.user.id,
+                },
+              },
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    avatarUrl: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
-    console.log(allChats)
-    const formattedChat = allChats.map(c => console.log(c))
-    res.status(200).json({ chats: allChats });
+    const formattedChats = allChats.map(c => {
+      return {
+        id: c.chat.id,
+        name: c.chat.name,
+        isGroup: c.chat.isGroup,
+        members: c.chat.members.map(m => m.user),
+      }
+    })
+    res.status(200).json({ chats: formattedChats });
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: 'Server error' });
@@ -51,6 +76,11 @@ export const chatInfo = async (req, res, next) => {
           }
         },
         members: {
+          where: {
+            userId: {
+              not: req.user.id,
+            },
+          },
           include: {
             user: {
               select: {

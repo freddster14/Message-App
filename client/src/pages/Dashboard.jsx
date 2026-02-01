@@ -1,4 +1,5 @@
 import apiFetch from "../api/client";
+import AllChats from "../components/AllChats";
 import Chat from "../components/Chat";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
@@ -6,6 +7,7 @@ import { useEffect, useState } from "react";
 export default function Dashboard() {
   const { user } = useAuth();
   const [data, setData] = useState();
+  const [chat, setChat] = useState();
 
   useEffect(() => { 
     async function fetchData() {
@@ -25,8 +27,8 @@ export default function Dashboard() {
 
   return (
     <>
-      <Chat chats={data.chats}/>
-      <h2>chat messaes</h2>
+      <AllChats chats={data.chats} setChat={setChat} />
+      <Chat chat={chat} />
     </>
   )
 }

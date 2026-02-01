@@ -130,10 +130,12 @@ export const decline = async (req, res, next) => {
   const { senderId } = req.body;
   try {
     const invite = await prisma.invite.findUnique({
+      where: {
        senderId_recipientId: {
           senderId,
           recipientId: req.user.id,
         },
+      },
     });
     if(!invite) return res.status(400).json({ msg: 'Invite does not exist' })
     await prisma.invite.delete({

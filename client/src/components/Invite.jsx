@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 
 export default function Invite({ i }) {
   const [error, setError] = useState('');
+  const [isActive, setIsActive] = useState(true);
   const navigate = useNavigate();
 
   const handleAccept = async () => {
@@ -13,6 +14,7 @@ export default function Invite({ i }) {
         body: JSON.stringify({ senderId: i.id })
       }
       await apiFetch('/invite/accept', options);
+      setIsActive(false);
       navigate('/dashboard');
     } catch (error) {
       setError(error.message)
@@ -26,6 +28,7 @@ export default function Invite({ i }) {
         body: JSON.stringify({ senderId: i.id })
       }
       await apiFetch('/invite/decline', options);
+      setIsActive(false);
       navigate('/dashboard');
     } catch (error) {
       setError(error.message)
@@ -34,13 +37,16 @@ export default function Invite({ i }) {
 
   return (
     <>
-    {i.avatarUrl !== "" ? <img></img> : <div>{i.name[0]} img</div>}
+    {isActive && <div className="invite">
+
+    {i.avatarUrl !== "" ? <img src={i.avatarUrl}></img> : <div>{i.name[0]} img</div>}
     <div>
       <p>{i.name}</p>
       <p>{error}</p>
     </div>
     <button onClick={handleAccept}>Accept</button>
     <button onClick={handleDecline}>X</button>
+    </div>}
     </>
     
   )

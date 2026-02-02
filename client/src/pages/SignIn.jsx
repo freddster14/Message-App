@@ -28,7 +28,6 @@ export default function SignIn() {
         body: JSON.stringify({ email, password })
       }
       const user = await apiFetch('/sign-in', options);
-      console.log(user)
       setUser(user);
       navigate('/dashboard')
     } catch (error) {

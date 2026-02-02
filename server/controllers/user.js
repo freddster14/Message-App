@@ -102,8 +102,6 @@ export const search = async (req, res, next) => {
       }
     });
 
-    
-    console.log(users)
     res.status(200).json({ users })
   } catch (error) {
     console.error(error)

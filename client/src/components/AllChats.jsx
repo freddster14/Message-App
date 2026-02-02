@@ -10,13 +10,14 @@ export default function AllChats(props) {
       console.error(error);
     }
   }
+
   return (
     <>
       {props.chats.map(c => {
         if(!c.isGroup) {
           return (
             <div key={"c" + c.id} onClick={() => openChat(c.id)}>
-              {c.members[0].avatarUrl === ""
+              {c.members[0].avatarUrl === null
               ? <div className="default-avatar">{c.members[0].name[0]}</div>
               : <img src={c.members[0].avatarUrl} alt={c.members[0].name} />
               }

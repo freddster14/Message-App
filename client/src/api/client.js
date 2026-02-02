@@ -1,6 +1,8 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
 export default async function apiFetch(url, options) {
   try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}${url}`, {
+    const res = await fetch(`${API_URL}${url}`, {
       ...options,
       headers: {
         "Content-Type": "application/json",
@@ -16,6 +18,7 @@ export default async function apiFetch(url, options) {
 
     return data;
   } catch (error) {
+    
     console.error(error);
     throw error;
   }

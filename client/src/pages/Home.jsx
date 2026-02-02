@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import '../styles/App.css'
 import { Navigate } from 'react-router';
 import { useAuth } from '../context/AuthContext';

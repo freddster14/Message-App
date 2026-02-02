@@ -4,7 +4,6 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Chat(props) {
   const { user } = useAuth();
-  console.log(props);
   const[newMessages, setNewMessages] = useState([]);
   const[message, setMessage] = useState("");  
   const [error, setError] = useState("")

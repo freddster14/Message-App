@@ -1,11 +1,11 @@
 import { useState } from "react";
 import apiFetch from "../api/client";
-import { useNavigate } from "react-router";
+import { useChats } from "../context/ChatProvider";
 
 export default function Invite({ i }) {
+  const { setRefreshTrigger } = useChats();
   const [error, setError] = useState('');
   const [isActive, setIsActive] = useState(true);
-  const navigate = useNavigate();
 
   const handleAccept = async () => {
     try {
@@ -15,7 +15,7 @@ export default function Invite({ i }) {
       }
       await apiFetch('/invite/accept', options);
       setIsActive(false);
-      navigate('/dashboard');
+      setRefreshTrigger(prev => prev + 1)
     } catch (error) {
       setError(error.message)
     }
@@ -29,7 +29,6 @@ export default function Invite({ i }) {
       }
       await apiFetch('/invite/decline', options);
       setIsActive(false);
-      navigate('/dashboard');
     } catch (error) {
       setError(error.message)
     }

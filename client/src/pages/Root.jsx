@@ -1,5 +1,5 @@
 import Nav from '../components/Nav'
-import { Outlet, useLocation, useNavigate } from 'react-router'
+import { Outlet } from 'react-router'
 import { useAuth } from '../context/AuthContext'
 
 export default function Root() {

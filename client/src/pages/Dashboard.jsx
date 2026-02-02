@@ -1,11 +1,11 @@
 import apiFetch from "../api/client";
 import AllChats from "../components/AllChats";
 import Chat from "../components/Chat";
-import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
+import { useChats } from "../context/ChatProvider";
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { refreshTrigger } = useChats();
   const [data, setData] = useState();
   const [chat, setChat] = useState();
 
@@ -19,7 +19,7 @@ export default function Dashboard() {
       }
     }
     fetchData();
-  }, []);
+  }, [refreshTrigger]);
 
   if (!data) {
     return <div>Loading...</div>;

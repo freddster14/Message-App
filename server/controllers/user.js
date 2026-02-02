@@ -74,34 +74,25 @@ export const remove = async (req, res, next) => {
 export const search = async (req, res, next) => {
   const { searched } = req.params;
   try {
-    const userChatsId = await prisma.chatMember.findMany({
-      where: {
-        userId: req.user.id,
-      },
-      select: {
-        chatId: true,
-      }
-    });
-    console.log(userChatsId)
     const users = await prisma.user.findMany({
       where: {
-        NOT: {
-          id: {
-            equals: req.user.id
-          }
-        },
-        name: {
-          contains: searched,
-        },
-        AND : {
+        AND : [ 
+          { id: { not: req.user.id }},
+          { name: { contains: searched, mode: 'insensitive' }},
+          {
           chatMemberships: {
             none: {
-              chatId: {
-                notIn: userChatsId
+              chat: {
+                members: {
+                  some: {
+                    userId: req.user.id
+                  }
+                }
               }
             }
           }
         }
+        ]
       },
       select: {
         id: true,

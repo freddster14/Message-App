@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import apiFetch from "../api/client";
-import { useNavigate } from "react-router";
 import NewChat from "./NewChat";
 
 export default function SearchNewChat() {
   const [searched, setSearched] = useState("");
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
     if(searched === "") return;

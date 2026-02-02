@@ -63,7 +63,7 @@ export const chatInfo = async (req, res, next) => {
       include: {
         messages: {
           orderBy: {
-            createdAt: 'desc'
+            createdAt: 'asc'
           },
           include: {
             author: {
@@ -99,16 +99,17 @@ export const chatInfo = async (req, res, next) => {
         where: {
           userId_chatId: {
             userId: req.user.id,
-            chatId,
+            chatId: parseInt(chatId),
           }
         },
         data: {
-          lastReadMessageId: chat.messages[-1].id
+          lastReadMessageId: chat.messages[chat.messages.length - 1].id
         },
       })
     }
 
     const formattedChat = {
+      id: chat.id,
       name: chat.name,
       isGroup: chat.isGroup,
       members: chat.members.map(m => m.user),

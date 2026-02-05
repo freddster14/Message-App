@@ -75,8 +75,8 @@ export const later = async (req, res, next) => {
     });
     res.status(201).json({
        user: {
-          id: newUser.id,
-          name: newUser.name,
+          id: req.user.id,
+          name: req.user.name,
         },
         token,
     });
@@ -104,8 +104,8 @@ export const signIn = [
       });
       res.status(201).json({
         user: {
-          id: newUser.id,
-          name: newUser.name,
+          id: user.id,
+          name: user.name,
         },
         token,
       });

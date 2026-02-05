@@ -46,7 +46,7 @@ const io = new Server(httpServer, {
 });
 
 
-//io.use(verifySocketToken)
+io.use(verifySocketToken)
 
 io.on("connection", (socket) => {
   // console.log("a user connected", socket.id);

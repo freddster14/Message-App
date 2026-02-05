@@ -38,11 +38,11 @@ const io = new Server(httpServer, {
   cors: {
     origin: process.env.CLIENT_URL,
     credentials: true,
-    transports: ['websocket', 'polling'],
-    allowEIO3: true, 
-    pingTimeout: 60000,
-    pingInterval: 25000
-  }
+  },
+  transports: ['websocket', 'polling'],
+  allowEIO3: true, 
+  pingTimeout: 60000,
+  pingInterval: 25000
 });
 
 

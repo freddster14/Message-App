@@ -1,13 +1,23 @@
+import { useState } from "react";
 import apiFetch from "../api/client";
+import { socket } from "../socket";
 
 export default function AllChats(props) {
+  const [prev, setPrev] = useState(null);
+   
 
   const openChat = async (chatId) => {
+    if(prev === chatId) return;
+    if(prev)  socket.emit("leave_chat", prev);
+    props.setNewMessages([])
     try {
+      socket.emit('join_chat', chatId)
       const data = await apiFetch(`/chat/${chatId}`)
       props.setChat(data.chat);
     } catch (error) {
       console.error(error);
+    } finally {
+      setPrev(chatId)
     }
   }
 
@@ -25,7 +35,6 @@ export default function AllChats(props) {
             </div>
           )
         }
-        
       })}  
 
     </>

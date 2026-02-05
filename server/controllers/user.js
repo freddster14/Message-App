@@ -14,7 +14,7 @@ export const user = async (req, res, next) => {
         bio: true,
       }
     });
-    if(!user) return res.status(400).json({ msg: "No user"})
+    if(!userData) return res.status(400).json({ msg: "No user"})
     res.status(200).json({
       id: userData.id,
       email: userData.email,

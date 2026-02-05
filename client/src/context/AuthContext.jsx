@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { createContext } from "react";
 import { useContext } from "react";
 import apiFetch from "../api/client";
+import { setSocketAuthToken } from "../socket";
 
 const AuthContext = createContext(null);
 
@@ -15,7 +16,9 @@ export function AuthProvider({ children }) {
     async function loadUser() {
       try {
         const res = await apiFetch('/user');
-        setUser(res)
+        setUser(res);
+        const data = await apiFetch('/user/socket-token');
+        setSocketAuthToken(data.token)
       } catch {
 
         setUser(null)

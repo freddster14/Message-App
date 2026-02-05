@@ -46,8 +46,11 @@ export const signUp = [
       })
 
       res.status(201).json({
-        id: newUser.id,
-        name: newUser.name,
+        user: {
+          id: newUser.id,
+          name: newUser.name,
+        },
+        token,
       });
       
     } catch (error) {
@@ -71,8 +74,11 @@ export const later = async (req, res, next) => {
       maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days
     });
     res.status(201).json({
-      id: req.user.id,
-      name: req.user.name,
+       user: {
+          id: newUser.id,
+          name: newUser.name,
+        },
+        token,
     });
 }
 
@@ -97,8 +103,11 @@ export const signIn = [
         maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days
       });
       res.status(201).json({
-        id: user.id,
-        name: user.name
+        user: {
+          id: newUser.id,
+          name: newUser.name,
+        },
+        token,
       });
     } catch (error) {
       next(error);

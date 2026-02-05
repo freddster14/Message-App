@@ -3,6 +3,7 @@ import { Link, Navigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import apiFetch from "../api/client";
 import Edit from "../components/Edit";
+import { setSocketAuthToken } from "../socket";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -35,8 +36,9 @@ export default function SignUp() {
         method: 'POST',
         body: JSON.stringify({ email, password, confirm })
       }
-      const user = await apiFetch('/sign-up', options)
-      setUser(user);
+      const data = await apiFetch('/sign-up', options)
+      setUser(data.user);
+      setSocketAuthToken(data.token)
       setEdit(true)
     } catch (error) {
       setErr(error.message);

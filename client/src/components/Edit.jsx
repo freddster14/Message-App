@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import apiFetch from "../api/client";
 import { useNavigate } from "react-router";
+import { setSocketAuthToken } from "../socket";
 
 export default function Edit({ props }) {
   const { user, setUser } = useAuth();
@@ -23,8 +24,9 @@ export default function Edit({ props }) {
         method: 'POST',
         body: JSON.stringify({ name, bio, avatarUrl: img })
       }
-      const updatedUser = await apiFetch('/user/update', options );
-      setUser(updatedUser);
+      const data = await apiFetch('/user/update', options );
+      setUser(data.user);
+      setSocketAuthToken(data.token)
       navigate('/dashboard')
     } catch (error) {
       setError(error.message)

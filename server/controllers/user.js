@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { prisma } from "../prisma/client.js"
 import jwt from "jsonwebtoken";
+import verifyToken from "../middleware/token.js";
 
 export const user = async (req, res, next) => {
   try {
@@ -26,6 +27,19 @@ export const user = async (req, res, next) => {
     next(error);
   }
 }
+
+
+export const token = [
+  verifyToken,
+  async (req, res) => {
+    const token = jwt.sign(
+      { userId: req.user.id, userName: req.user.name },
+      process.env.SECRET,
+      { expiresIn: '1h'}
+    );
+    res.json({ token })
+  }
+]
 
 // validate & add multer & cloudinary
 export const update = async (req, res, next) => {
@@ -56,6 +70,7 @@ export const update = async (req, res, next) => {
         id: user.id,
         name: user.name
       },
+      token,
     });
   } catch (error) {
     next(error);

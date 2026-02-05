@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import apiFetch from "../api/client";
+import { setSocketAuthToken } from "../socket";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -27,8 +28,9 @@ export default function SignIn() {
         method: 'POST',
         body: JSON.stringify({ email, password })
       }
-      const user = await apiFetch('/sign-in', options);
-      setUser(user);
+      const data = await apiFetch('/sign-in', options);
+      setUser(data.user);
+      setSocketAuthToken(data.token)
       navigate('/dashboard')
     } catch (error) {
       setErr(error.message);

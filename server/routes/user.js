@@ -4,7 +4,8 @@ import verifyToken from "../middleware/token.js";
 const user = express.Router();
 
 user.get('/', verifyToken, controller.user);
-user.get('/:searched', verifyToken, controller.search)
+user.get('/socket-token', controller.token)
+user.get('/:searched', verifyToken, controller.search);
 //user.get('/:id', verifyToken, controller.profile);
 
 user.post('/update', verifyToken, controller.update);

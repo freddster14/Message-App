@@ -7,7 +7,6 @@ import chat from "./routes/chat.js";
 import message from "./routes/message.js";
 import invite from "./routes/invite.js";
 import cookieParser from "cookie-parser";
-import jwt from "jsonwebtoken";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import verifySocketToken from "./middleware/SocketToken.js";
@@ -39,6 +38,10 @@ const io = new Server(httpServer, {
   cors: {
     origin: process.env.CLIENT_URL,
     credentials: true,
+    transports: ['websocket', 'polling'],
+    allowEIO3: true, 
+    pingTimeout: 60000,
+    pingInterval: 25000
   }
 });
 

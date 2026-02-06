@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import Inbox from "./Inbox";
 import apiFetch from "../api/client";
 import SearchNewChat from "./Search";
+import NewGroupChat from "./NewGroupChat";
 
 export default function Nav() {
   const { user, setUser } = useAuth();
@@ -25,6 +26,7 @@ export default function Nav() {
     ? <div>
       <h1>{user.name}</h1>
       <SearchNewChat />
+      <NewGroupChat />
       <Inbox />
       <button onClick={handleLogout}>Logout</button>
     </div>

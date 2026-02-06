@@ -4,7 +4,6 @@ import { socket } from "../socket";
 
 export default function AllChats(props) {
   const [prev, setPrev] = useState(null);
-   
 
   const openChat = async (chatId) => {
     if(prev === chatId) return;
@@ -20,7 +19,7 @@ export default function AllChats(props) {
       setPrev(chatId)
     }
   }
-
+  console.log(props.chats)
   return (
     <>
       {props.chats.map(c => {
@@ -32,6 +31,13 @@ export default function AllChats(props) {
               : <img src={c.members[0].avatarUrl} alt={c.members[0].name} />
               }
               <p>{c.members[0].name}</p>
+            </div>
+          )
+        } else {
+          return (
+            <div key={"c" + c.id} onClick={() => openChat(c.id)}>
+              <p>Group img</p>
+              <p>{c.name}</p>
             </div>
           )
         }

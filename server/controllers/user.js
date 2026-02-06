@@ -28,6 +28,31 @@ export const user = async (req, res, next) => {
   }
 }
 
+export const users = async (req, res, next) => {
+  const { usersId } = req.body
+  try {
+    const usersData = await prisma.user.findMany({
+      where: { id: usersId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        avatarUrl: true,
+        bio: true,
+      }
+    });
+    if(!userData) return res.status(400).json({ msg: "No user"})
+    res.status(200).json({
+      id: userData.id,
+      email: userData.email,
+      name: userData.name,
+      avatarUrl: userData.avatarUrl,
+      bio: userData.bio,
+    })
+  } catch (error) {
+    next(error);
+  }
+}
 
 export const token = [
   verifyToken,

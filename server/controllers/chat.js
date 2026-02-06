@@ -123,11 +123,66 @@ export const chatInfo = async (req, res, next) => {
   }
 }
 
+//validate ids
+export const group = async (req, res) => {
+  const { usersId } = req.body;
+  console.log(usersId)
+  try {
+    let name = "";
+    for(let i=0; i < usersId.length; i++) {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: parseInt(usersId[i]),
+        },
+        select: {
+          name: true,
+        }
+      });
+      console.log(user)
+      if(i === usersId.length - 1) {
+        name += `${user.name}`
+      } else {
+        name += `${user.name},`
+      }
+      if(!user) return res.status(400).json({ msg: "Not all user exists"})
+    };
+
+
+    const chat = await prisma.chat.create({
+      data: {
+        name,
+        isGroup: true,
+      }
+    });
+
+     await prisma.chatMember.create({
+        data: {
+          userId: req.user.id,
+          chatId: chat.id,
+        }
+      });
+    for(let i=0; i < usersId.length; i++) {
+      await prisma.chatMember.create({
+        data: {
+          userId: parseInt(usersId[i]),
+          chatId: chat.id,
+        }
+      });
+    };
+
+    res.status(200).json({ msg: "Created" })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+}
+
+
 export const remove = async (req, res) => {
   const { chatId } = req.params;
   try {
     const member = await prisma.chatMember.findUnique({
-       where: {
+      where: {
         userId_chatId: {
           userId: req.user.id,
           chatId: parseInt(chatId),
@@ -136,7 +191,14 @@ export const remove = async (req, res) => {
     });
     if(!member) return res.status(400).json({ msg: "Access denied" });
 
-    await prisma.chat.delete({ where: { id: parseInt(chatId) }});
+    await prisma.chatMember.delete({
+      where: {
+      userId_chatId: {
+        userId: req.user.id,
+        chatId: parseInt(chatId),
+      }
+      },
+    });
     res.status(200).json({ msg: "Deleted" }); 
   } catch (error) {
     console.error(error);

@@ -15,7 +15,6 @@ export default function Dashboard() {
     async function fetchData() {
       try {
         const res = await apiFetch('/chat');
-
         setData(res);
       } catch (error) {
         console.error(error);
@@ -39,7 +38,7 @@ export default function Dashboard() {
   return (
     <>
       <AllChats chats={data.chats} setChat={setChat} setNewMessages={setNewMessages} />
-      <Chat chat={chat} newMessages={newMessages} setNewMessages={setNewMessages} />
+      <Chat chat={chat} chats={data.chats} newMessages={newMessages} setNewMessages={setNewMessages} />
     </>
   )
 }

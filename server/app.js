@@ -12,7 +12,7 @@ import { createServer } from "http";
 import verifySocketToken from "./middleware/SocketToken.js";
 import { prisma } from "./prisma/client.js";
 
-const app = express();
+export const app = express();
 const httpServer = createServer(app) ;
 
 
@@ -87,6 +87,4 @@ io.on("connection", (socket) => {
   })
 })
 
-
-
-httpServer.listen(process.env.PORT, () => console.log(`LIVE ON PORT: ${process.env.PORT}`));
+export { httpServer }

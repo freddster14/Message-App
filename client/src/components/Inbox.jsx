@@ -18,7 +18,7 @@ export default function Inbox() {
     }
   }
   return(
-    <div>
+    <>
       <button onClick={getInvites}>Inbox</button>
       {active && 
         <div>
@@ -30,7 +30,7 @@ export default function Inbox() {
           { error !== "" && <div>{error}</div> }
         </div>
       }
-    </div>
+    </>
     
   )
 }

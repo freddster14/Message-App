@@ -4,12 +4,12 @@ import Chat from "../components/Chat";
 import { useEffect, useState } from "react";
 import { useChats } from "../context/ChatProvider";
 import { socket } from "../socket";
+import styles from '../styles/Dashboard.module.css'
 
 export default function Dashboard() {
   const { refreshTrigger } = useChats();
   const [data, setData] = useState();
   const [chat, setChat] = useState();
-  const [newMessages, setNewMessages] = useState([]);
 
   useEffect(() => { 
     async function fetchData() {
@@ -36,9 +36,9 @@ export default function Dashboard() {
   }
 
   return (
-    <>
-      <AllChats chats={data.chats} setChat={setChat} setNewMessages={setNewMessages} />
-      <Chat chat={chat} chats={data.chats} newMessages={newMessages} setNewMessages={setNewMessages} />
-    </>
+    <div className={styles.main}>
+      <AllChats chats={data.chats} setChat={setChat}  />
+      <Chat chat={chat} />
+    </div>
   )
 }

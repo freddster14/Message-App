@@ -4,15 +4,18 @@ import { useAuth } from "../context/AuthContext";
 import { socket } from "../socket";
 import { useEffect } from "react";
 import SearchChats from "./SearchChats";
+import { useChats } from "../context/ChatProvider";
 
-export default function Chat({ chat, chats, newMessages, setNewMessages}) {
+export default function Chat({ chat }) {
   const { user } = useAuth();
-  const[message, setMessage] = useState("");  
+  const { setRefreshTrigger } = useChats()
   const [error, setError] = useState("")
   const [leftChat, setLeftChat] = useState(false);
   const [addUser, setAddUser] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
-
+  const [newMessages, setNewMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  console.log(chat)
   useEffect(() => {  
     const handleNewMessage = (data) => {
       setNewMessages(prev => [...prev, data.message]);
@@ -24,6 +27,17 @@ export default function Chat({ chat, chats, newMessages, setNewMessages}) {
       socket.off('new_message', handleNewMessage);
     };
   }, [setNewMessages]);
+
+  useEffect(() => {
+    function reset() {
+      setMessage("");
+      setNewMessages([]);
+      setMessage("");
+      setLeftChat(false);
+    }
+    reset()
+  }, [chat])
+  
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -57,7 +71,8 @@ export default function Chat({ chat, chats, newMessages, setNewMessages}) {
   const handleLeave = async (e) => {
     try {
       await apiFetch(`/chat/leave/${chat.id}`, { method: "POST" });
-      setLeftChat(true)
+      setLeftChat(true);
+      setRefreshTrigger(prev => prev + 1)
     } catch (error) {
       setError(error.message)
     }

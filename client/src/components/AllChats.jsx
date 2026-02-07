@@ -8,7 +8,6 @@ export default function AllChats(props) {
   const openChat = async (chatId) => {
     if(prev === chatId) return;
     if(prev)  socket.emit("leave_chat", prev);
-    props.setNewMessages([])
     try {
       socket.emit('join_chat', chatId)
       const data = await apiFetch(`/chat/${chatId}`)
@@ -21,7 +20,7 @@ export default function AllChats(props) {
   }
   console.log(props.chats)
   return (
-    <>
+    <div>
       {props.chats.map(c => {
         if(!c.isGroup) {
           return (
@@ -43,6 +42,6 @@ export default function AllChats(props) {
         }
       })}  
 
-    </>
+    </div>
   )
 }

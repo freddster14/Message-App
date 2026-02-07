@@ -5,7 +5,7 @@ const user = express.Router();
 
 user.get('/', verifyToken, controller.user);
 user.get('/socket-token', controller.token)
-user.get('/:searched', verifyToken, controller.search);
+user.get('/search-new/:searched', verifyToken, controller.searchNewUsers);
 //user.get('/:id', verifyToken, controller.profile);
 
 user.post('/update', verifyToken, controller.update);

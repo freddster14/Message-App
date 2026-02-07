@@ -111,7 +111,7 @@ export const remove = async (req, res, next) => {
   }
 }
 
-export const search = async (req, res, next) => {
+export const searchNewUsers = async (req, res, next) => {
   const { searched } = req.params;
   try {
     const users = await prisma.user.findMany({

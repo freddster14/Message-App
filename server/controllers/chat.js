@@ -126,9 +126,9 @@ export const chatInfo = async (req, res, next) => {
 //validate ids
 export const group = async (req, res) => {
   const { usersId } = req.body;
-  console.log(usersId)
   try {
     let name = "";
+    // Check usersId
     for(let i=0; i < usersId.length; i++) {
       const user = await prisma.user.findUnique({
         where: {
@@ -138,14 +138,18 @@ export const group = async (req, res) => {
           name: true,
         }
       });
-      console.log(user)
+
+      if(!user) return res.status(400).json({ msg: "Not all user exists"})
+
+      //Create group name
       if(i === usersId.length - 1) {
         name += `${user.name}`
       } else {
         name += `${user.name},`
       }
-      if(!user) return res.status(400).json({ msg: "Not all user exists"})
     };
+
+    //Allow creating based on user already having a chat with said usersId <-- missing
 
 
     const chat = await prisma.chat.create({

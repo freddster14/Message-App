@@ -29,7 +29,7 @@ export default function SearchedNewChats() {
             </div>
           }
           {users === 'none' && <div>No user found</div>}
-          {users === 'load' && <div>Loading...</div> }
+          {users === 'loading' && <div>Loading...</div> }
         </div>
       : <button onClick={() => setActive(true)}>Invite someone</button>
       }

@@ -1,20 +1,26 @@
 import { useEffect, useState } from "react"
 import Search from "./Search";
 
-export default function SearchChats({ chats, setData }) {
+export default function SearchData({ data, setData, handleData }) {
   const [searched, setSearched] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
    
     const find = setTimeout(() => {
+      setData('loading')
        if(searched === "") {
-        return setData(chats);
+        return setData(data);
       }
-      setData(chats.filter(c => c.isGroup ? c.name.includes(searched) : c.members[0].name.includes(searched)))
+      const filtered = handleData(data, searched);
+      if(filtered.length === 0) {
+        setData('none')
+      } else {
+        setData(filtered);
+      }
     }, 1000)
     return () => clearTimeout(find);
-  }, [setData, searched, chats])
+  }, [handleData, data, searched, setData])
 
  
 

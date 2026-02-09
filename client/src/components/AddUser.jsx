@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import apiFetch from "../api/client";
 import Search from "./Search";
 import SearchChats from "./SearchChats";
+import { useChats } from "../context/ChatProvider";
+import SearchData from "./SearchChats";
 
-export default function AddUser({ chat }) {
+export default function AddUser({ chat, setChat, setError }) {
+  const { setRefreshTrigger } = useChats()
   const [active, setActive] = useState(false);
-  const [error, setError] = useState("");
   const [filtered, setFiltered] = useState([])
   const [users, setUsers] = useState()
   const [selectedUsers, setSelectedUsers] = useState([])
@@ -20,7 +22,8 @@ export default function AddUser({ chat }) {
 
    const handleAdd =  async (e) => {
     e.preventDefault();
-    if(selectedUsers.length < 0) {
+    setActive(false);
+    if(selectedUsers.length < 1) {
       setError("No users selected")
       return;
     }
@@ -29,9 +32,13 @@ export default function AddUser({ chat }) {
         method: "POST",
         body: JSON.stringify({ chatId: chat.id, usersId: selectedUsers })
       }
-      await apiFetch('/chat/add', options)
-      setActive(false)
+      await apiFetch('/chat/add', options);
+      const data = await apiFetch(`/chat/${chat.id}`)
+      setChat(data.chat)
+      setRefreshTrigger(prev => prev + 1);
+      setSelectedUsers([])
     } catch (error) {
+      setActive(true)
       setError(error)
     }
   }
@@ -40,12 +47,15 @@ export default function AddUser({ chat }) {
     try {
   
       const data = await apiFetch(`/user/friends/${chat.id}`);
-      console.log(data)
       setUsers(data.users);
       setActive(true)
     } catch (error) {
       setError(error.message)
     }
+  }
+
+  const handleData = (data, searched) => {
+    return data.filter(c => c.name.includes(searched))
   }
   return (
     <>
@@ -53,14 +63,14 @@ export default function AddUser({ chat }) {
       {active && 
       <div>
         <button onClick={() => setActive(false)}>Close</button>
-        <SearchChats
-          chats={users}
+        <SearchData
+          data={users}
           setData={setFiltered}
+          handleData={handleData}
         />
-        <p>{error}</p>
         <form onSubmit={handleAdd}>
             <div>
-              {filtered.length > 0 && (
+              {filtered.length > 0 && typeof filtered !== 'string' && (
                 filtered.map(u => (
                     <div type="checkbox" key={u.id + "gs"}>
                       <input type="checkbox" value={u.id} onChange={handleSelect}/>
@@ -72,7 +82,10 @@ export default function AddUser({ chat }) {
                     </div>
                   )
                 )
-              )}
+              )
+              }
+              {filtered === 'loading' && <p>Loading...</p>}
+              {filtered === 'none' && <p>No user to add. Create a chat with users to add to this chat.</p>}
             </div>
           <button type="submit">Add</button>
         </form>

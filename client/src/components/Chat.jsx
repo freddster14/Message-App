@@ -7,7 +7,7 @@ import SearchChats from "./SearchChats";
 import { useChats } from "../context/ChatProvider";
 import AddUser from "./AddUser";
 
-export default function Chat({ chat }) {
+export default function Chat({ chat, setChat }) {
   const { user } = useAuth();
   const { setRefreshTrigger } = useChats();
   const [error, setError] = useState("");
@@ -100,7 +100,7 @@ export default function Chat({ chat }) {
           <div>
             <h2>{getChatName(chat.name)}</h2>
             {!leftChat && <button onClick={handleLeave}>Leave Chat</button>}
-            { chat.isGroup && !leftChat && <AddUser chat={chat}/>}
+            { chat.isGroup && !leftChat && <AddUser chat={chat} setChat={setChat} setError={setError}/>}
           </div>
           <div>
             {chat.messages.map(m => (

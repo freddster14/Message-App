@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import apiFetch from "../../api/client";
 import { useChats } from "../../context/ChatProvider";
-import SearchChats from "../SearchChats";
+import SearchData from "../SearchChats";
 
 export default function NewGroupChat() {
   const { setRefreshTrigger } = useChats();
@@ -51,6 +51,10 @@ export default function NewGroupChat() {
   );
   }
 
+  const handleData = (data, searched) => {
+    return data.filter(c => c.isGroup ? c.name.includes(searched) : c.members[0].name.includes(searched))
+  }
+
 
   if(!data) return null;
   return (
@@ -60,9 +64,10 @@ export default function NewGroupChat() {
       {active 
         ? <div>
           <button onClick={() => setActive(false)}>Close</button>
-          <SearchChats
-          chats={data}
+          <SearchData
+          data={data}
           setData={setFiltered}
+          handleData={handleData}
           error={error}
           />
           <form onSubmit={handleSubmit}>

@@ -9,7 +9,7 @@ export default function Search({ url, setData }) {
 
   useEffect(() => {
     if(searched === "") return;
-    setData('load');
+    setData('loading');
     const find = setTimeout(async () => {
       try {
         const data = await apiFetch(`${url}${searched}`);

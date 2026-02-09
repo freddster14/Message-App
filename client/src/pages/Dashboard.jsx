@@ -12,7 +12,7 @@ export default function Dashboard() {
   const [chat, setChat] = useState();
 
   useEffect(() => { 
-    async function fetchData() {
+    async function fetchChats() {
       try {
         const res = await apiFetch('/chat');
         setData(res);
@@ -20,7 +20,7 @@ export default function Dashboard() {
         console.error(error);
       }
     }
-    fetchData();
+    fetchChats();
   }, [refreshTrigger]);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function Dashboard() {
   return (
     <div className={styles.main}>
       <AllChats chats={data.chats} setChat={setChat}  />
-      <Chat chat={chat} />
+      <Chat chat={chat} setChat={setChat} />
     </div>
   )
 }

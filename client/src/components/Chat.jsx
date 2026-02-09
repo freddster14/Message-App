@@ -18,13 +18,13 @@ export default function Chat({ chat, setChat }) {
 
   const getChatName = (name) => {
     if(!name && chat.isGroup) {
-      let chatName = "";
+      let chatName = null;
       for(let n of chat.members) {
         n === chat.members[chat.members.length - 1] 
           ? chatName += n.name 
           : chatName += `${n.name}, `
       }
-      return chatName;
+      return chatName || 'Just You';
     }
     return chat.members[0].name;
   }

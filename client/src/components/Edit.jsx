@@ -4,7 +4,7 @@ import apiFetch from "../api/client";
 import { useNavigate } from "react-router";
 import { setSocketAuthToken } from "../socket";
 
-export default function Edit({ props }) {
+export default function Edit() {
   const { user, setUser } = useAuth();
   const [name, setName] = useState(user.name);
   const [bio, setBio] = useState(user.bio);
@@ -12,6 +12,7 @@ export default function Edit({ props }) {
   const [avatarUrl, setAvatarUrl] = useState(user.avatarUrl);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
   console.log(user)
   const handleSubmit = async (e) => {
     e.preventDefault();

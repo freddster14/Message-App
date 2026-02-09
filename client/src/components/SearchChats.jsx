@@ -3,7 +3,6 @@ import Search from "./Search";
 
 export default function SearchData({ data, setData, handleData }) {
   const [searched, setSearched] = useState("");
-  const [error, setError] = useState("");
 
   useEffect(() => {
    

@@ -28,6 +28,12 @@ export const chats = async (req, res, next) => {
           },
         },
       },
+      orderBy: {
+        chat: {
+          updatedAt: 'desc'
+        }
+      } 
+
     });
     const formattedChats = allChats.map(c => {
       return {
@@ -35,8 +41,10 @@ export const chats = async (req, res, next) => {
         name: c.chat.name,
         isGroup: c.chat.isGroup,
         members: c.chat.members.map(m => m.user),
+        lastReadMessageId: c.lastReadMessageId
       }
     })
+    console.log(formattedChats)
     res.status(200).json({ chats: formattedChats });
   } catch (error) {
     console.error(error);
@@ -233,6 +241,8 @@ export const remove = async (req, res) => {
       }
       },
     });
+
+    
     res.status(200).json({ msg: "Deleted" }); 
   } catch (error) {
     console.error(error);

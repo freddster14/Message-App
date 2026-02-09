@@ -11,6 +11,7 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import verifySocketToken from "./middleware/SocketToken.js";
 import { prisma } from "./prisma/client.js";
+import { createMessage } from "./controllers/message.js";
 
 export const app = express();
 const httpServer = createServer(app) ;
@@ -57,22 +58,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on('send_message', async (msg, chatId) => {
-    const message = await prisma.message.create({
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            avatarUrl: true,
-          }
-        },
-      },
-      data: {
-        text: msg,
-        authorId: socket.userId,
-        chatId: chatId,
-      }
-    })
+    const message = await createMessage(msg, chatId, socket.userId)
     // console.log(`chat${chatId}`, msg, chatId);
     // console.log(socket.rooms)
     socket.to(`chat${chatId}`).emit('new_message', { message });

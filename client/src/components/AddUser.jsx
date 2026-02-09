@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import apiFetch from "../api/client";
-import Search from "./Search";
-import SearchChats from "./SearchChats";
 import { useChats } from "../context/ChatProvider";
 import SearchData from "./SearchChats";
 

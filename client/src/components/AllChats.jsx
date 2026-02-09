@@ -18,7 +18,7 @@ export default function AllChats(props) {
       setPrev(chatId)
     }
   }
-  console.log(props.chats)
+
   return (
     <div>
       {props.chats.map(c => {

@@ -1,5 +1,5 @@
 import { isRouteErrorResponse, useRouteError, Link } from "react-router";
-import Nav from "../components/Nav";
+import Nav from "../components/nav/Nav";
 
 export default function ErrorBoundary() {
   const error = useRouteError();

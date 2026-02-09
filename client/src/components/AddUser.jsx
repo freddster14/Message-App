@@ -1,23 +1,14 @@
 import { useEffect, useState } from "react";
 import apiFetch from "../api/client";
+import Search from "./Search";
+import SearchChats from "./SearchChats";
 
-export default function AddUser({ chats, handleSubmit, setSelectedUsers }) {
-  const [searched, setSearched] = useState("");
+export default function AddUser({ chat }) {
+  const [active, setActive] = useState(false);
   const [error, setError] = useState("");
-
-   useEffect(() => {
-      if(searched === "") return;
-      const find = setTimeout(async () => {
-        try {
-          const data = await apiFetch(`/chat/${searched}`)
-          setUsers(data.users);
-        } catch (error) {
-          setError(error.message);
-        }
-      }, 3000)
-      return () => clearTimeout(find)
-    }, [searched])
-  
+  const [filtered, setFiltered] = useState([])
+  const [users, setUsers] = useState()
+  const [selectedUsers, setSelectedUsers] = useState([])
 
   const handleSelect = (e) => {
     setSelectedUsers(prev => 
@@ -27,33 +18,65 @@ export default function AddUser({ chats, handleSubmit, setSelectedUsers }) {
   );
   }
 
+   const handleAdd =  async (e) => {
+    e.preventDefault();
+    if(selectedUsers.length < 0) {
+      setError("No users selected")
+      return;
+    }
+    try {
+      const options = {
+        method: "POST",
+        body: JSON.stringify({ chatId: chat.id, usersId: selectedUsers })
+      }
+      await apiFetch('/chat/add', options)
+    } catch (error) {
+      setError(error)
+    }
+  }
+
+  const getUsers = async () => {
+    try {
+  
+      const data = await apiFetch(`/user/friends/${chat.id}`);
+      console.log(data)
+      setUsers(data.users);
+      setActive(true)
+    } catch (error) {
+      setError(error.message)
+    }
+  }
   return (
     <>
+      <button onClick={getUsers}>Add user</button>
+      {active && 
       <div>
-        <label htmlFor="search">Search</label>
-        <input type="text" value={searched} onChange={(e) => setSearched(e.target.value)} />
-      </div>
-      <p>{error}</p>
-      <form onSubmit={handleSubmit}>
-          <div>
-            {chats.length > 0 && (
-              chats.map(u => {
-                if(!u.isGroup) 
-                return (
-                  <div type="checkbox" key={u.id + "gs"}>
-                    <input type="checkbox" value={u.members[0].id} onChange={handleSelect}/>
-                    {u.members[0].avatarUrl === null
-                    ? <div className="default-avatar">{u.members[0].name[0]}</div>
-                    : <img src={u.members[0].avatarUrl} alt={u.members[0].name} />
-                    }
-                    <p>{u.members[0].name}</p>
-                  </div>
+        <button onClick={() => setActive(false)}>Close</button>
+        <SearchChats
+          chats={users}
+          setData={setFiltered}
+        />
+        <p>{error}</p>
+        <form onSubmit={handleAdd}>
+            <div>
+              {filtered.length > 0 && (
+                filtered.map(u => (
+                    <div type="checkbox" key={u.id + "gs"}>
+                      <input type="checkbox" value={u.id} onChange={handleSelect}/>
+                      {u.avatarUrl === null
+                      ? <div className="default-avatar">{u.name[0]}</div>
+                      : <img src={u.avatarUrl} alt={u.name} />
+                      }
+                      <p>{u.name}</p>
+                    </div>
+                  )
                 )
-              })
-            )}
-          </div>
-        <button type="submit">Create</button>
-      </form>
+              )}
+            </div>
+          <button type="submit">Add</button>
+        </form>
+      </div>
+      }
     </>
   )
 }

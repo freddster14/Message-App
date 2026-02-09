@@ -1,4 +1,4 @@
-import Nav from '../components/Nav'
+import Nav from '../components/nav/Nav'
 import { Outlet } from 'react-router'
 import { useAuth } from '../context/AuthContext'
 

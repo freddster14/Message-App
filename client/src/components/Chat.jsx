@@ -5,17 +5,16 @@ import { socket } from "../socket";
 import { useEffect } from "react";
 import SearchChats from "./SearchChats";
 import { useChats } from "../context/ChatProvider";
+import AddUser from "./AddUser";
 
 export default function Chat({ chat }) {
   const { user } = useAuth();
-  const { setRefreshTrigger } = useChats()
-  const [error, setError] = useState("")
+  const { setRefreshTrigger } = useChats();
+  const [error, setError] = useState("");
   const [leftChat, setLeftChat] = useState(false);
-  const [addUser, setAddUser] = useState(false);
-  const [selectedUsers, setSelectedUsers] = useState([]);
   const [newMessages, setNewMessages] = useState([]);
   const [message, setMessage] = useState("");
-  console.log(chat)
+
   useEffect(() => {  
     const handleNewMessage = (data) => {
       setNewMessages(prev => [...prev, data.message]);
@@ -32,7 +31,6 @@ export default function Chat({ chat }) {
     function reset() {
       setMessage("");
       setNewMessages([]);
-      setMessage("");
       setLeftChat(false);
     }
     reset()
@@ -68,7 +66,7 @@ export default function Chat({ chat }) {
     }
   }
 
-  const handleLeave = async (e) => {
+  const handleLeave = async () => {
     try {
       await apiFetch(`/chat/leave/${chat.id}`, { method: "POST" });
       setLeftChat(true);
@@ -77,19 +75,6 @@ export default function Chat({ chat }) {
       setError(error.message)
     }
   }
-
-  // const handleAdd =  async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const options = {
-  //       method: "POST",
-  //       body: JSON.stringify({ chatId: chat.id, usersId: selectedUsers })
-  //     }
-  //     await apiFetch('/chat/add', options)
-  //   } catch (error) {
-  //     setError(error)
-  //   }
-  // }
  
   return (
     <>
@@ -98,10 +83,7 @@ export default function Chat({ chat }) {
           <div>
             <h2>Chat Name: {chat.name || chat.members[0].name}</h2>
             {!leftChat && <button onClick={handleLeave}>Leave Chat</button>}
-            {/* <button onClick={() => setAddUser(prev => !prev)}>Add user</button>
-            {addUser && 
-              <SearchChats chats={chats} handleSubmit={handleAdd} setSelectedUsers={setSelectedUsers} error={error}/>
-            } */}
+            { chat.isGroup && <AddUser chat={chat}/>}
           </div>
           <div>
             {chat.messages.map(m => (

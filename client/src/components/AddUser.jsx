@@ -30,6 +30,7 @@ export default function AddUser({ chat }) {
         body: JSON.stringify({ chatId: chat.id, usersId: selectedUsers })
       }
       await apiFetch('/chat/add', options)
+      setActive(false)
     } catch (error) {
       setError(error)
     }

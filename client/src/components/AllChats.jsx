@@ -33,10 +33,19 @@ export default function AllChats(props) {
             </div>
           )
         } else {
+          let name = c.name;
+          if(!c.name) {
+            name = "";
+            for(let n of c.members) {
+              n === c.members[c.members.length - 1] 
+                ? name += n.name 
+                : name += `${n.name}, `
+            }
+          }
           return (
             <div key={"c" + c.id} onClick={() => openChat(c.id)}>
               <p>Group img</p>
-              <p>{c.name}</p>
+              <p>{name}</p>
             </div>
           )
         }

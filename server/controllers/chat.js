@@ -141,12 +141,6 @@ export const group = async (req, res) => {
 
       if(!user) return res.status(400).json({ msg: "Not all user exists"})
 
-      //Create group name
-      if(i === usersId.length - 1) {
-        name += `${user.name}`
-      } else {
-        name += `${user.name},`
-      }
     };
 
     //Allow creating based on user already having a chat with said usersId <-- missing
@@ -175,6 +169,42 @@ export const group = async (req, res) => {
     };
 
     res.status(200).json({ msg: "Created" })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+}
+
+export const add = async (req, res) => {
+  const { chatId, usersId } = req.body;
+
+  try {
+    const chat = await prisma.chat.findUnique({ where: { id: parseInt(chatId) }});
+    if(!chat) return res.status(400).json({ msg: 'Chat not found' });
+
+    // Check usersId
+    for(let i=0; i < usersId.length; i++) {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: parseInt(usersId[i]),
+        },
+        select: {
+          name: true,
+        }
+      });
+
+      if(!user) return res.status(400).json({ msg: "Not all user exists"});
+
+      await prisma.chatMember.create({
+        data: {
+          userId: parseInt(usersId[i]),
+          chatId: chat.id,
+        }
+      });
+      
+    };
+
+    res.status(200).json({ msg: 'Added' })
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: 'Server error' });

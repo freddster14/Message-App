@@ -8,6 +8,7 @@ chat.get('/:chatId', verifyToken, controller.chatInfo);
 
 chat.post('/group', verifyToken, controller.group)
 chat.post('/leave/:chatId', verifyToken, controller.remove)
+chat.post('/add', controller.add)
 
 chat.delete('/:chatId', verifyToken, controller.remove);
 

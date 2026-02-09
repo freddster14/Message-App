@@ -14,6 +14,22 @@ export default function Chat({ chat }) {
   const [leftChat, setLeftChat] = useState(false);
   const [newMessages, setNewMessages] = useState([]);
   const [message, setMessage] = useState("");
+  
+
+  const getChatName = (name) => {
+    if(!name && chat.isGroup) {
+      let chatName = "";
+      for(let n of chat.members) {
+        n === chat.members[chat.members.length - 1] 
+          ? chatName += n.name 
+          : chatName += `${n.name}, `
+      }
+      return chatName;
+    }
+    return chat.members[0].name;
+  }
+
+ 
 
   useEffect(() => {  
     const handleNewMessage = (data) => {
@@ -76,14 +92,15 @@ export default function Chat({ chat }) {
     }
   }
  
+
   return (
     <>
       {chat ? (
         <div>
           <div>
-            <h2>Chat Name: {chat.name || chat.members[0].name}</h2>
+            <h2>{getChatName(chat.name)}</h2>
             {!leftChat && <button onClick={handleLeave}>Leave Chat</button>}
-            { chat.isGroup && <AddUser chat={chat}/>}
+            { chat.isGroup && !leftChat && <AddUser chat={chat}/>}
           </div>
           <div>
             {chat.messages.map(m => (

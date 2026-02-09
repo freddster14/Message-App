@@ -4,7 +4,7 @@ export const create = async (req, res, next) => {
   const { recipientId } = req.body;
   try {
     const recipient = await prisma.user.findUnique({ where: { id: parseInt(recipientId) }});
-    if(!recipient) return res.status(200).json({ msg: "User does not exist" });
+    if(!recipient) return res.status(400).json({ msg: "User does not exist" });
     const existingInvite = await prisma.invite.findUnique({
       where: {
         senderId_recipientId: {
@@ -33,7 +33,7 @@ export const create = async (req, res, next) => {
         recipientId: parseInt(recipientId),
       }
     });
-    res.status(200).json({ msg: "Sent" });
+    res.status(201).json({ msg: "Sent" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: 'Server error' });
@@ -86,7 +86,7 @@ export const sent = async (req, res, next) => {
   }
 }
 
-export const accept = async (req, res, next) => {
+export const accept = async (req, res) => {
   const { senderId } = req.body;
   try {
     const invite = await prisma.invite.findUnique({

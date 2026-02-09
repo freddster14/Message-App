@@ -1,6 +1,5 @@
 import request from "supertest";
 import { beforeAll, describe, expect, jest } from '@jest/globals';
-import { user } from "../controllers/user.js";
 
 let mockUserValue = { id: 'default-id' };
 

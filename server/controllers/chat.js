@@ -44,7 +44,6 @@ export const chats = async (req, res, next) => {
         lastReadMessageId: c.lastReadMessageId
       }
     })
-    console.log(formattedChats)
     res.status(200).json({ chats: formattedChats });
   } catch (error) {
     console.error(error);

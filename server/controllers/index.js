@@ -54,7 +54,8 @@ export const signUp = [
       });
       
     } catch (error) {
-      next(error);
+      console.error(error);
+      res.status(500).json({ msg: 'Server error' });
     }
   }
 ]
@@ -110,7 +111,8 @@ export const signIn = [
         token,
       });
     } catch (error) {
-      next(error);
+      console.error(error);
+      res.status(500).json({ msg: 'Server error' });
     }
   }
 ]

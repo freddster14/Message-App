@@ -24,7 +24,8 @@ export const user = async (req, res, next) => {
       bio: userData.bio,
     })
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
   }
 }
 
@@ -50,7 +51,8 @@ export const users = async (req, res, next) => {
       bio: userData.bio,
     })
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
   }
 }
 
@@ -98,7 +100,8 @@ export const update = async (req, res, next) => {
       token,
     });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
   }
 }
 
@@ -107,7 +110,8 @@ export const remove = async (req, res, next) => {
     await prisma.user.delete({ where: { id: req.user.id }});
     res.status(200).json({ msg: "Deleted" });
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
   }
 }
 
@@ -144,6 +148,54 @@ export const searchNewUsers = async (req, res, next) => {
 
     res.status(200).json({ users })
   } catch (error) {
-    console.error(error)
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+}
+
+export const filteredFriends = async (req, res, next) => {
+  const { chatId } = req.params;
+  try {
+    const chat = await prisma.chat.findUnique({
+      where: { id: parseInt(chatId) },
+      include: {
+        members: {
+          select: {
+            userId: true,
+          }
+        }
+      }
+    });
+    const usersIds = chat.members.map(i => i.userId);
+
+    const users = await prisma.user.findMany({
+      where: {
+        AND: [
+          { id: { notIn: usersIds }},
+          { chatMemberships: {
+              some: {
+                chat: {
+                  members: {
+                    some: {
+                    userId: req.user.id
+                  }
+                  }
+                }
+              }
+            }
+          },
+        ]
+      },
+      select: {
+        id:true,
+        name: true,
+        avatarUrl: true,
+      }
+    });
+
+    res.status(200).json({ users })
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Server error' });
   }
 }

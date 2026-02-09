@@ -1,5 +1,5 @@
 import { useState } from "react"
-import apiFetch from "../api/client";
+import apiFetch from "../../api/client";
 import Invite from "./Invite";
 
 export default function Inbox() {

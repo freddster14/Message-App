@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import Inbox from "./Inbox";
-import apiFetch from "../api/client";
+import apiFetch from "../../api/client";
 import NewGroupChat from "./NewGroupChat";
 import SearchedNewChats from "./SearchedNewChats";
 

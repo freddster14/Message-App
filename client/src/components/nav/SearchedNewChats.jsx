@@ -1,6 +1,6 @@
 import { useState } from "react";
-import NewChat from "./NewChat";
-import Search from "./Search";
+import NewChat from "../NewChat";
+import Search from "../Search";
 
 export default function SearchedNewChats() {
   const [users, setUsers] = useState([]);

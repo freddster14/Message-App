@@ -1,6 +1,6 @@
 import { useState } from "react";
-import apiFetch from "../api/client";
-import { useChats } from "../context/ChatProvider";
+import apiFetch from "../../api/client";
+import { useChats } from "../../context/ChatProvider";
 
 export default function Invite({ i }) {
   const { setRefreshTrigger } = useChats();

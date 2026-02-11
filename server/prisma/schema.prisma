@@ -50,7 +50,7 @@ model ChatMember {
 model Message {
   id        Int     @id @default(autoincrement())
   text      String  @db.Text
-  author    User    @relation(fields: [authorId], references: [id])
+  author    User?    @relation(fields: [authorId], references: [id])
   authorId  Int
   chat      Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId    Int

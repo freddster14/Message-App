@@ -4,4 +4,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - run: echo 'Hello CI/CD'
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: cd server && npm ci
+      - run: cd server && npx prisma generate
+        env: 
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      - run: cd server && npm test
+        env:
+          SECRET: ${{ secrets.SECRET }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}

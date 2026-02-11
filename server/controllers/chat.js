@@ -44,6 +44,7 @@ export const chats = async (req, res, next) => {
         lastReadMessageId: c.lastReadMessageId,
       }
     })
+    
     res.status(200).json({ chats: formattedChats });
   } catch (error) {
     console.error(error);
@@ -62,7 +63,7 @@ export const chatInfo = async (req, res, next) => {
         }
       },
     });
-    if(!member) return res.status(400).json({ msg: "Access denied" });
+    if(!member) return res.status(403).json({ msg: "Access denied" });
     const chat = await prisma.chat.findUnique({
       where: { 
         id: parseInt(chatId),
@@ -168,10 +169,10 @@ export const cursorPagination = async (req, res) => {
       },
     });
 
-    if(messages.length === 0) return res.status(400).json({ msg: 'No messages to retrieve'})
+    if(messages.length === 0) return res.status(204).json({ msg: 'No messages to retrieve'})
     res.status(200).json({ messages })
   } catch (error) {
-     console.error(error);
+    console.error(error);
     res.status(500).json({ msg: 'Server error' });
   }
 }
@@ -222,7 +223,7 @@ export const group = async (req, res) => {
       });
     };
 
-    res.status(200).json({ msg: "Created" })
+    res.status(201).json({ msg: "Created" })
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: 'Server error' });
@@ -277,7 +278,7 @@ export const remove = async (req, res) => {
         }
       },
     });
-    if(!member) return res.status(400).json({ msg: "Access denied" });
+    if(!member) return res.status(403).json({ msg: "Access denied" });
 
     await prisma.chatMember.delete({
       where: {

@@ -86,14 +86,14 @@ export const later = async (req, res, next) => {
 export const signIn = [
   validate.credentials,
   handleValidation,
-  async (req, res, next) => {
+  async (req, res) => {
     const { email, password } = req.body;
     try {
       const user = await prisma.user.findUnique({ where: { email }});
-      if(!user) return res.status(401).json({ msg: 'User not found' });
+      if(!user) return res.status(409).json({ msg: 'User not found' });
       
       const isMatch = await bcrypt.compare(password, user.passHashed);
-      if(!isMatch) return res.status(401).json({ msg: 'Invalid credentials' });
+      if(!isMatch) return res.status(409).json({ msg: 'Invalid credentials' });
       
       const token = jwt.sign({ userId: user.id, userName: user.name }, process.env.SECRET, { expiresIn: "5d" });
 

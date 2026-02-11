@@ -64,7 +64,7 @@ export const received = async (req, res, next) => {
   }
 }
 
-export const sent = async (req, res, next) => {
+export const sent = async (req, res) => {
   try {
     const invites = await prisma.invite.findMany({
       where: { senderId: req.user.id },
@@ -119,7 +119,7 @@ export const accept = async (req, res) => {
         chatId: chat.id
       },
     });
-    res.status(200).json({ msg: "Accepted" })
+    res.status(201).json({ msg: "Accepted" })
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: 'Server error' });

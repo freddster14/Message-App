@@ -147,15 +147,15 @@ export const cursorPagination = async (req, res) => {
     if(!chat) return res.status(400).json({ msg: 'Chat not found'});
 
     const messages = await prisma.message.findMany({
-      take: 20,
-      orderBy: {
-        createdAt: 'desc'
+      take: -20, // Negative for backward pagination
+      cursor: {
+        id: parseInt(cursor),
       },
       where: {
         chatId: chat.id,
-        id: {
-          lt: parseInt(cursor),
-        }
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
       include: {
         author: {
@@ -163,13 +163,12 @@ export const cursorPagination = async (req, res) => {
             id: true,
             name: true,
             avatarUrl: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
-    if(!messages) return res.status(400).json({ msg: 'No messages to retrieve'})
-    
+    if(messages.length === 0) return res.status(400).json({ msg: 'No messages to retrieve'})
     res.status(200).json({ messages })
   } catch (error) {
      console.error(error);

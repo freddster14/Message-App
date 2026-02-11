@@ -21,6 +21,13 @@ describe('Chat', () => {
 
   beforeAll( async () => {
      // Clean up test entries
+    await prisma.chat.deleteMany({
+      where: { 
+        members: { 
+          some: { user: { email: { contains: '@test.com' } } }
+        }
+      }
+    });
     await prisma.user.deleteMany({
       where: {
         email: {
@@ -35,7 +42,7 @@ describe('Chat', () => {
         passHashed: "password123",
       }
     });
-    mockUserValue = user1
+    mockUserValue = { id: user1.id}
     user2 = await prisma.user.create({
       data: {
         email: 'chat-user2@test.com',
@@ -66,14 +73,6 @@ describe('Chat', () => {
   });
 
   afterAll(async () => {
-    await prisma.chat.deleteMany({
-      where: { 
-        members: { 
-          some: { user: { email: { contains: '@test.com' } } }
-        }
-      }
-    });
-
     await prisma.$disconnect()
   });
 
@@ -148,7 +147,57 @@ describe('Chat', () => {
       expect(afterRead.lastReadMessageId).not.toBeNull();
       expect(afterRead.lastReadMessageId).toBeDefined();
       expect(afterRead.lastReadMessageId).toBeGreaterThan(0);
+    })
+  })
 
+  describe('GET /chat/:chatId/:cursor', () => {
+    // Send 25 messages
+    let cursor;
+    beforeAll(async () => {
+      let messages = [];
+      for(let i=0; i < 24; i++) {
+          messages.push({
+          text: 'test',
+          authorId: user1.id,
+          chatId,
+        })
+      }
+      await prisma.message.createMany({
+        data: messages
+      });
+      cursor = await prisma.message.findFirst({
+         orderBy: {
+          createdAt: 'desc'
+        },
+        skip: 20,
+        where: {
+          chatId,
+        },
+       
+      });
+    });
+    
+    it('should return 5 new messages', async () => {
+      const res = await request(app)
+        .get(`/chat/${chatId}/${cursor.id}`)
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('messages');
+      expect(res.body.messages.length).toBe(5);
+    });
+
+    it('should reject on invalid cursor', async () => {
+      const res = await request(app)
+        .get(`/chat/${chatId}/${-1}`)
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should reject on invalid id', async () => {
+      const res = await request(app)
+        .get(`/chat/${-1}/${cursor.id}`)
+
+      expect(res.status).toBe(400);
     })
   })
 

@@ -1,36 +1,19 @@
-import { isRouteErrorResponse, useRouteError, Link } from "react-router";
+import { Link } from "react-router";
 import Nav from "../components/nav/Nav";
 
-export default function ErrorBoundary() {
-  const error = useRouteError();
-  if (isRouteErrorResponse(error)) {
-    if (error.status === 404) {
-      return (
-        <>
-          <Nav />
-          <div className="error">
-            <h1>404</h1>
-            <p>Page Not Found, return <Link to="/">Home</Link></p>
-          </div>
-        </>
-      );
-    }
+export default function Error({ setError, error, style }) {
 
+  if (error) {
     return (
       <>
-        <Nav />
-        <div className="error">
-          <h1>{error.status} </h1>
-          <p>{error.data}, return <Link to="/">Home</Link></p>
+        <div id="error" className={style}>
+          {style === 'modal' && <button onClick={() => setError()}>✖</button>}
+          <h1>{error.status.code} </h1>
+          {error.status.code === 404
+            ? <p>Page not found, return <Link to="/dashboard">Home.</Link></p>
+            : <p>{error.message}, try <Link to="/dashboard" reloadDocument>again.</Link></p>
+          }
         </div>
-      </>
-    );
-  } else if (error instanceof Error) {
-    return (
-      <>
-        <Nav />
-        <h1>{error.status || 'Error'}</h1>
-        <p>{error.message}, return <Link to="/">Home</Link></p>
       </>
     );
   } else {

@@ -14,7 +14,7 @@ const router = createBrowserRouter([
     ErrorBoundary: ErrorBoundary,
     children: [
       { index: true, Component: Home },
-      { path: "dashboard", element: <ProtectedRoute><Dashboard /></ProtectedRoute>  },
+      { path: "dashboard", element: <ProtectedRoute><Dashboard /></ProtectedRoute> },
     ]
   },
   { path: "/sign-in", Component: SignIn },

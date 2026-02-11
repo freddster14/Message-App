@@ -9,6 +9,10 @@ export default function Inbox() {
  
 
   const getInvites = async () => {
+    if(active) {
+      setActive(false);
+      return;
+    }
     try {
       const data = await apiFetch('/invite/received');
       setInvites(data.invites);
@@ -22,11 +26,15 @@ export default function Inbox() {
       <button onClick={getInvites}>Inbox</button>
       {active && 
         <div>
-          { error === "" && invites.length > 0 ? invites.map(i => (
-            <div key={"i" + i.id}>
-              <Invite i={i} />
-            </div>
-          )) : <div>No invites</div> }
+          <button onClick={() => setActive(false)}>✖</button>
+          { error === "" && invites.length > 0
+            ? invites.map(i => (
+              <div key={"i" + i.id}>
+                <Invite i={i} />
+              </div>
+            )) 
+          : <div>No invites</div>
+          }
           { error !== "" && <div>{error}</div> }
         </div>
       }

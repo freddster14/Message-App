@@ -9,19 +9,16 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
   const [err, setErr] = useState("");
-  const { setUser, user } = useAuth();
+  const { setUser, user, loading } = useAuth();
   const navigate = useNavigate();
 
-
-  useEffect(() => {
-    setErr("")
-  }, [email, password])
-
+  if(loading) return <div>Loading...</div>
   if(user) return <Navigate to="/dashboard" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(isSubmit) return;
+    setErr("")
     setIsSubmit(true);
     if (!email || !password) {
       setErr("All fields are required");

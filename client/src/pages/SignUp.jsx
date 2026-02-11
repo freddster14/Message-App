@@ -10,15 +10,19 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [view, setView] = useState(false)
   const [confirm, setConfirm] = useState("");
+  const [isSubmit, setIsSubmit] = useState(false);
   const [err, setErr] = useState("");
   const [edit, setEdit] = useState(false);
-  const { user, setUser } = useAuth();
+  const { user, setUser, loading } = useAuth();
 
+
+  if(loading) return <div>Loading...</div>
   if(user) return <Navigate to="/dashboard" replace />;
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErr("")
     if (!email || !password) {
       setErr( "All fields are required")
       return;
@@ -31,6 +35,8 @@ export default function SignUp() {
       setErr("Passwords do not match");
       return;
     }
+    if(isSubmit) return;
+    setIsSubmit(true);
     try {
       const options = {
         method: 'POST',
@@ -40,8 +46,11 @@ export default function SignUp() {
       setUser(data.user);
       setSocketAuthToken(data.token)
       setEdit(true)
+      setIsSubmit(false)
     } catch (error) {
       setErr(error.message);
+    } finally {
+      setIsSubmit(false)
     }
   }
 

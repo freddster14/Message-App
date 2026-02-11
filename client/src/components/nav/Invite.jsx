@@ -4,7 +4,7 @@ import { useChats } from "../../context/ChatProvider";
 
 export default function Invite({ i }) {
   const { setRefreshTrigger } = useChats();
-  const [error, setError] = useState('');
+  const [error, setError] = useState();
   const [isActive, setIsActive] = useState(true);
 
   const handleAccept = async () => {
@@ -17,7 +17,7 @@ export default function Invite({ i }) {
       setIsActive(false);
       setRefreshTrigger(prev => prev + 1)
     } catch (error) {
-      setError(error.message)
+      setError(error)
     }
   }
 
@@ -30,22 +30,23 @@ export default function Invite({ i }) {
       await apiFetch('/invite/decline', options);
       setIsActive(false);
     } catch (error) {
-      setError(error.message)
+      setError(error)
     }
   }
 
   return (
     <>
-    {isActive && <div className="invite">
-
-    {i.avatarUrl !== "" ? <img src={i.avatarUrl}></img> : <div>{i.name[0]} img</div>}
-    <div>
-      <p>{i.name}</p>
-      <p>{error}</p>
-    </div>
-    <button onClick={handleAccept}>Accept</button>
-    <button onClick={handleDecline}>X</button>
-    </div>}
+      {isActive && 
+        <div className="invite">
+          {i.avatarUrl !== "" ? <img src={i.avatarUrl}></img> : <div>{i.name[0]} img</div>}
+          <div>
+            <p>{i.name}</p>
+            <p>{error}</p>
+          </div>
+          <button onClick={handleAccept}>Accept</button>
+          <button onClick={handleDecline}>X</button>
+        </div>
+      }
     </>
     
   )

@@ -5,19 +5,21 @@ import { useEffect, useState } from "react";
 import { useChats } from "../context/ChatProvider";
 import { socket } from "../socket";
 import styles from '../styles/Dashboard.module.css'
+import Error from "./Error";
 
 export default function Dashboard() {
   const { refreshTrigger } = useChats();
-  const [data, setData] = useState();
+  const [chats, setChats] = useState("load");
   const [chat, setChat] = useState();
+  const [error, setError] = useState()
 
   useEffect(() => { 
     async function fetchChats() {
       try {
         const res = await apiFetch('/chat');
-        setData(res);
+        setChats(res.chats);
       } catch (error) {
-        console.error(error);
+        setError(error)
       }
     }
     fetchChats();
@@ -31,13 +33,17 @@ export default function Dashboard() {
     }
   }, []);
 
-  if (!data) {
+  if(error) {
+    return <Error error={error}/>
+  }
+
+  if (chats === "load") {
     return <div>Loading...</div>;
   }
 
   return (
     <div className={styles.main}>
-      <AllChats chats={data.chats} setChat={setChat}  />
+      <AllChats chats={chats} setChat={setChat}  />
       {chat ? <Chat chat={chat} setChat={setChat} />
       : <div>Select a chat to view messages</div>  
     }

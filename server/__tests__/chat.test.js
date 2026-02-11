@@ -73,6 +73,13 @@ describe('Chat', () => {
   });
 
   afterAll(async () => {
+    await prisma.chat.deleteMany({
+      where: { 
+        members: { 
+          some: { user: { email: { contains: '@test.com' } } }
+        }
+      }
+    });
     await prisma.$disconnect()
   });
 

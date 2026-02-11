@@ -144,7 +144,7 @@ export const cursorPagination = async (req, res) => {
         }
       },
     });
-    if(!chat) return res.status(400).json({ msg: 'No access'});
+    if(!chat) return res.status(400).json({ msg: 'Chat not found'});
 
     const messages = await prisma.message.findMany({
       take: 20,
@@ -152,6 +152,7 @@ export const cursorPagination = async (req, res) => {
         createdAt: 'desc'
       },
       where: {
+        chatId: chat.id,
         id: {
           lt: parseInt(cursor),
         }
@@ -166,6 +167,8 @@ export const cursorPagination = async (req, res) => {
         }
       }
     });
+
+    if(!messages) return res.status(400).json({ msg: 'No messages to retrieve'})
     
     res.status(200).json({ messages })
   } catch (error) {

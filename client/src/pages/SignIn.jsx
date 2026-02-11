@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import apiFetch from "../api/client";
@@ -11,6 +11,11 @@ export default function SignIn() {
   const [err, setErr] = useState("");
   const { setUser, user } = useAuth();
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+    setErr("")
+  }, [email, password])
 
   if(user) return <Navigate to="/dashboard" replace />;
 
@@ -37,7 +42,8 @@ export default function SignIn() {
     } finally {
       setIsSubmit(false)
     }
-  }
+  };
+
 
   return(
     <div>

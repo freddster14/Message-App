@@ -41,7 +41,7 @@ export const chats = async (req, res, next) => {
         name: c.chat.name,
         isGroup: c.chat.isGroup,
         members: c.chat.members.map(m => m.user),
-        lastReadMessageId: c.lastReadMessageId
+        lastReadMessageId: c.lastReadMessageId,
       }
     })
     res.status(200).json({ chats: formattedChats });
@@ -69,8 +69,9 @@ export const chatInfo = async (req, res, next) => {
       },
       include: {
         messages: {
+          take: 20,
           orderBy: {
-            createdAt: 'asc'
+            createdAt: 'desc'
           },
           include: {
             author: {
@@ -121,6 +122,7 @@ export const chatInfo = async (req, res, next) => {
       isGroup: chat.isGroup,
       members: chat.members.map(m => m.user),
       messages: chat.messages,
+      createdAt: chat.createdAt,
     }
 
     res.status(200).json({ chat: formattedChat })
@@ -129,6 +131,49 @@ export const chatInfo = async (req, res, next) => {
     res.status(500).json({ msg: 'Server error' });
   }
 }
+
+export const cursorPagination = async (req, res) => {
+  const { chatId, cursor } = req.params;
+
+  try {
+    const chat = await prisma.chatMember.findUnique({
+      where: {
+        userId_chatId: {
+          userId: req.user.id,
+          chatId: parseInt(chatId),
+        }
+      },
+    });
+    if(!chat) return res.status(400).json({ msg: 'No access'});
+
+    const messages = await prisma.message.findMany({
+      take: 20,
+      orderBy: {
+        createdAt: 'desc'
+      },
+      where: {
+        id: {
+          lt: parseInt(cursor),
+        }
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            avatarUrl: true,
+          }
+        }
+      }
+    });
+    
+    res.status(200).json({ messages })
+  } catch (error) {
+     console.error(error);
+    res.status(500).json({ msg: 'Server error' });
+  }
+}
+
 
 //validate ids
 export const group = async (req, res) => {

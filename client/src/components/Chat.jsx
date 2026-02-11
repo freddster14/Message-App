@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import apiFetch from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { socket } from "../socket";
@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import SearchChats from "./SearchChats";
 import { useChats } from "../context/ChatProvider";
 import AddUser from "./AddUser";
+import styles from "../styles/Chat.module.css"
 
 export default function Chat({ chat, setChat }) {
   const { user } = useAuth();
@@ -13,8 +14,9 @@ export default function Chat({ chat, setChat }) {
   const [error, setError] = useState("");
   const [leftChat, setLeftChat] = useState(false);
   const [newMessages, setNewMessages] = useState([]);
+  const [loadedMessages, setLoadedMessages] = useState([])
+  const [isMoreMessages, setIsMoreMessages] = useState(chat.messages.length === 20);
   const [message, setMessage] = useState("");
-  
 
   const getChatName = (name) => {
     if(!name && chat.isGroup) {
@@ -30,10 +32,10 @@ export default function Chat({ chat, setChat }) {
   }
 
  
-
+  //receive message via socket
   useEffect(() => {  
     const handleNewMessage = (data) => {
-      setNewMessages(prev => [...prev, data.message]);
+      setNewMessages(prev => [data.message, ...prev]);
     };
     
     socket.on('new_message', handleNewMessage);
@@ -43,15 +45,32 @@ export default function Chat({ chat, setChat }) {
     };
   }, [setNewMessages]);
 
+  //Reset on chat change
   useEffect(() => {
     function reset() {
       setMessage("");
+      setLoadedMessages([])
       setNewMessages([]);
+      setIsMoreMessages(chat.messages.length === 20)
       setLeftChat(false);
     }
     reset()
   }, [chat])
   
+  //grab more messages on cursor
+  const handleCursor = async () => {
+    const cursor = loadedMessages.length > 0 
+      ? loadedMessages[loadedMessages.length - 1].id  
+      : chat.messages[chat.messages.length - 1].id
+    try {
+      const data = await apiFetch(`/chat/${chat.id}/${cursor}`);
+      setLoadedMessages(prev => [...prev, ...data.messages]);
+      if (data.messages.length !== 20) setIsMoreMessages(false) 
+    } catch (error) {
+      setError(error.message);
+    }
+  }
+
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -61,7 +80,7 @@ export default function Chat({ chat, setChat }) {
       text: message,
     };
     const temp = { messages: [...newMessages], message};
-    setNewMessages( prev => [...prev, formattedMessage])
+    setNewMessages( prev => [formattedMessage, ...prev])
     setMessage("")
     setError("")
     if(socket.active) {
@@ -91,43 +110,51 @@ export default function Chat({ chat, setChat }) {
       setError(error.message)
     }
   }
- 
 
   return (
     <>
-      {chat ? (
+      <div>
         <div>
-          <div>
-            <h2>{getChatName(chat.name)}</h2>
-            {!leftChat && <button onClick={handleLeave}>Leave Chat</button>}
-            { chat.isGroup && !leftChat && <AddUser chat={chat} setChat={setChat} setError={setError}/>}
-          </div>
-          <div>
-            {chat.messages.map(m => (
-              <div key={m.id}>
-                <p><strong>{m.author.name}:</strong> {m.text}</p>
-              </div>
-            ))}
-            {newMessages.map(m => 
-              (
-              <div key={m.id}>
-                <p><strong>{m.author.name}:</strong> {m.text}</p>
-              </div>
-              )
-            )}
-          </div>
-          <p>{error}</p>
-          {!leftChat 
-            ?  <form onSubmit={sendMessage}>
-                <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
-                <button onClick={sendMessage}>Send</button>
-              </form>
-            : <div>You left the chat. Chat will delete on exit!</div>
-          }
+          <h2>{getChatName(chat.name)}</h2>
+          {!leftChat && <button onClick={handleLeave}>Leave Chat</button>}
+          { chat.isGroup && !leftChat && <AddUser chat={chat} setChat={setChat} setError={setError}/>}
         </div>
-      ) : (
-        <div>Please select a chat to view messages.</div>
-      )} 
+        <div className={styles.messages}>
+          <div>
+          </div>
+          {newMessages.map(m => 
+            (
+            <div key={m.id}>
+              <p><strong>{m.author.name}:</strong> {m.text}</p>
+            </div>
+            )
+          )}
+          {chat.messages.map(m => (
+            <div key={m.id}>
+              <p><strong>{m.author.name}:</strong> {m.text}</p>
+            </div>
+          ))}
+          {loadedMessages.map(m => (
+            <div key={m.id}>
+              <p><strong>{m.author.name}:</strong> {m.text}</p>
+            </div>
+          ))}
+          <div>
+            { isMoreMessages 
+              ? <button onClick={handleCursor}>^</button>
+              : <div>Created at: {new Date(chat.createdAt).toLocaleDateString()}</div>
+            }
+          </div>
+        </div>
+        <p>{error}</p>
+        {!leftChat 
+          ?  <form onSubmit={sendMessage}>
+              <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
+              <button onClick={sendMessage}>Send</button>
+            </form>
+          : <div>You left the chat. Chat will delete on exit!</div>
+        }
+      </div> 
     </>
   )
 

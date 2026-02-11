@@ -5,6 +5,7 @@ const chat = express.Router();
 
 chat.get('/', verifyToken, controller.chats);
 chat.get('/:chatId', verifyToken, controller.chatInfo);
+chat.get('/:chatId/:cursor', verifyToken, controller.cursorPagination);
 
 chat.post('/group', verifyToken, controller.group)
 chat.post('/leave/:chatId', verifyToken, controller.remove)

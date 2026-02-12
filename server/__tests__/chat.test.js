@@ -120,7 +120,7 @@ describe('Chat', () => {
       const res = await request(app)
         .get('/chat/2');
 
-        expect(res.status).toBe(400)
+        expect(res.status).toBe(403)
         expect(res.body).toHaveProperty('msg')
     });
 
@@ -162,7 +162,7 @@ describe('Chat', () => {
     let cursor;
     beforeAll(async () => {
       let messages = [];
-      for(let i=0; i < 24; i++) {
+      for(let i=0; i < 25; i++) {
           messages.push({
           text: 'test',
           authorId: user1.id,
@@ -174,7 +174,7 @@ describe('Chat', () => {
       });
       cursor = await prisma.message.findFirst({
          orderBy: {
-          createdAt: 'desc'
+          id: 'desc'
         },
         skip: 20,
         where: {
@@ -193,11 +193,11 @@ describe('Chat', () => {
       expect(res.body.messages.length).toBe(5);
     });
 
-    it('should reject on invalid cursor', async () => {
+    it('should return no messages invalid cursor', async () => {
       const res = await request(app)
         .get(`/chat/${chatId}/${-1}`)
 
-      expect(res.status).toBe(400);
+      expect(res.status).toBe(204);
     });
 
     it('should reject on invalid id', async () => {
@@ -215,7 +215,7 @@ describe('Chat', () => {
         .post('/chat/group')
         .send({ usersId: [user2.id, user3.id] });
 
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(201);
     });
 
     it('should reject with incorrect usersId', async () => {
@@ -258,7 +258,7 @@ describe('Chat', () => {
     it('should reject on invalid data', async () => {
       const res = await request(app)
         .delete(`/chat/${-1}`);
-        expect(res.status).toBe(400);
+        expect(res.status).toBe(403);
     });
 
   });

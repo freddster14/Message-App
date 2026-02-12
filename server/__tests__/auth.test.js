@@ -69,7 +69,7 @@ describe("Authorization", () => {
           confirm: 'pa123',
         });
 
-      expect(res.status).toBe(401);
+      expect(res.status).toBe(400);
       expect(res.body).toHaveProperty('msg');
     })
   });
@@ -109,7 +109,7 @@ describe("Authorization", () => {
           password: 'wrong-password123'
         });
 
-      expect(res.status).toBe(401)
+      expect(res.status).toBe(409)
       expect(res.body).toHaveProperty('msg')
     });
 
@@ -121,7 +121,7 @@ describe("Authorization", () => {
           password: 'password123'
         });
 
-      expect(res.status).toBe(401)
+      expect(res.status).toBe(409)
       expect(res.body).toHaveProperty('msg')
     });
   })

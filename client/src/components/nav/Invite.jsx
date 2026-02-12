@@ -33,12 +33,12 @@ export default function Invite({ i }) {
       setError(error)
     }
   }
-
+  
   return (
     <>
       {isActive && 
         <div className="invite">
-          {i.avatarUrl !== "" ? <img src={i.avatarUrl}></img> : <div>{i.name[0]} img</div>}
+          {i.avatarUrl ? <img src={i.avatarUrl}></img> : <div>{i.name[0]}</div>}
           <div>
             <p>{i.name}</p>
             <p>{error}</p>

@@ -8,6 +8,7 @@ export default function NewChat({ u, setError }) {
   const handleInvite = async (e, recipientId) => {
     e.preventDefault();
     if(isSubmit) return;
+    setError()
     setIsSubmit(true);
     setValue("Invited");
     try {
@@ -19,6 +20,7 @@ export default function NewChat({ u, setError }) {
     } catch (error) {
       setValue("Send Invite")
       setError(error);
+      setIsSubmit(false)
     }
   }
   return (

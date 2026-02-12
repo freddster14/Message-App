@@ -1,14 +1,16 @@
 import { useState } from "react"
 import apiFetch from "../../api/client";
 import Invite from "./Invite";
+import Error from "../../pages/Error";
 
 export default function Inbox() {
   const [invites, setInvites] = useState(null);
   const [active, setActive] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState();
  
 
   const getInvites = async () => {
+    setError()
     if(active) {
       setActive(false);
       return;
@@ -18,24 +20,25 @@ export default function Inbox() {
       setInvites(data.invites);
       setActive(true);
     } catch (error) {
-      setError(error.message)
+      setError(error)
     }
   }
   return(
     <>
+      {error && <Error error={error} setError={setError} style={'modal'}/>}
       <button onClick={getInvites}>Inbox</button>
       {active && 
         <div>
           <button onClick={() => setActive(false)}>✖</button>
-          { error === "" && invites.length > 0
+          {invites.length > 0
             ? invites.map(i => (
               <div key={"i" + i.id}>
+                {console.log("dfsdf")}
                 <Invite i={i} />
               </div>
             )) 
           : <div>No invites</div>
           }
-          { error !== "" && <div>{error}</div> }
         </div>
       }
     </>

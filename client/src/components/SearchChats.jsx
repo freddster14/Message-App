@@ -5,11 +5,13 @@ export default function SearchData({ data, setData, handleData }) {
   const [searched, setSearched] = useState("");
 
   useEffect(() => {
-   
     const find = setTimeout(() => {
       setData('loading')
-       if(searched === "") {
+       if(searched === "" && data.length > 0) {
         return setData(data);
+      } else if(data.length === 0) {
+        setData('none');
+        return;
       }
       const filtered = handleData(data, searched);
       if(filtered.length === 0) {

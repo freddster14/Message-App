@@ -137,7 +137,7 @@ export const cursorPagination = async (req, res) => {
   const { chatId, cursor } = req.params;
 
   try {
-    const chat = await prisma.chatMember.findUnique({
+    const membership = await prisma.chatMember.findUnique({
       where: {
         userId_chatId: {
           userId: req.user.id,
@@ -145,18 +145,19 @@ export const cursorPagination = async (req, res) => {
         }
       },
     });
-    if(!chat) return res.status(400).json({ msg: 'Chat not found'});
+    if(!membership) return res.status(400).json({ msg: 'Chat not found'});
 
     const messages = await prisma.message.findMany({
-      take: -20, // Negative for backward pagination
+      take: 20, 
+      skip: 1,
       cursor: {
         id: parseInt(cursor),
       },
       where: {
-        chatId: chat.id,
+        chatId: membership.chatId,
       },
       orderBy: {
-        createdAt: 'desc',
+        id: 'desc',
       },
       include: {
         author: {

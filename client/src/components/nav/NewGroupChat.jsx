@@ -2,13 +2,14 @@ import { useEffect, useState } from "react"
 import apiFetch from "../../api/client";
 import { useChats } from "../../context/ChatProvider";
 import SearchData from "../SearchChats";
+import Error from "../../pages/Error";
 
 export default function NewGroupChat() {
   const { setRefreshTrigger } = useChats();
   const [data, setData] = useState([]);
   const [filtered, setFiltered] = useState([])
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState();
   const [active, setActive] = useState(false);
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export default function NewGroupChat() {
         const res = await apiFetch('/chat');
         setData(res.chats);
       } catch (error) {
-        setError(error.message)
+        setError(error)
       }
     };
     fetchChats();
@@ -39,7 +40,7 @@ export default function NewGroupChat() {
       setRefreshTrigger(prev => prev + 1);
       setSelectedUsers([])
     } catch (error) {
-      setError(error.message)
+      setError(error)
     }
   }
 
@@ -60,15 +61,13 @@ export default function NewGroupChat() {
   return (
 
     <>
-
-      {active 
+      {active && !error
         ? <div>
           <button onClick={() => setActive(false)}>Close</button>
           <SearchData
           data={data}
           setData={setFiltered}
           handleData={handleData}
-          error={error}
           />
           <form onSubmit={handleSubmit}>
             <div>

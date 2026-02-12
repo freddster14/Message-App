@@ -23,6 +23,7 @@ export default function Inbox() {
       setError(error)
     }
   }
+  console.log(error)
   return(
     <>
       {error && <Error error={error} setError={setError} style={'modal'}/>}
@@ -33,8 +34,7 @@ export default function Inbox() {
           {invites.length > 0
             ? invites.map(i => (
               <div key={"i" + i.id}>
-                {console.log("dfsdf")}
-                <Invite i={i} />
+                <Invite i={i} setError={setError} />
               </div>
             )) 
           : <div>No invites</div>

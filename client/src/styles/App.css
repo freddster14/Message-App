@@ -15,6 +15,10 @@
   margin: 0;
 }
 
+#error-p {
+  color: red;
+}
+
 .modal {
   border: 1px solid black;
   border-radius: 1rem;

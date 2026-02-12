@@ -3,7 +3,22 @@ import { prisma } from "../prisma/client.js";
 export const create = async (req, res) => {
   const { chatId, text } = req.body;
   try {
-    const message = await createMessage(text, parseInt(chatId), req.user.id)
+    if(text === "") return res.status(409).json({ msg: "Enter message" });
+
+    const chat = await prisma.chat.findUnique({ where: { id: parseInt(chatId) }});
+    if(!chat) return res.status(400).json({ msg: 'Chat does not exist'});
+
+    const membership = await prisma.chatMember.findUnique({
+      where: {
+        userId_chatId: {
+          userId: req.user.id,
+          chatId: parseInt(chatId),
+        },
+      },
+    })
+    if(!membership) return res.status(403).json({ msg: 'Not a member of this chat'})
+
+    const message = await createMessage(text, chat.id, req.user.id)
     res.status(200).json({ message });
   } catch (error) {
     console.error(error);
@@ -11,8 +26,8 @@ export const create = async (req, res) => {
   }
 }
 
+// Validation should happen before this is ran.
 export const createMessage = async (text, chatId, authorId) => {
-  if(text === "") return res.status(400).json({ msg: "Enter message" })
    const message = await prisma.message.create({
       include: {
         author: {

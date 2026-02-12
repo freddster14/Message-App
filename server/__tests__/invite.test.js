@@ -149,7 +149,7 @@ describe("Invite", () => {
           chatMemberships: true,
         }
       })
-      expect(res.status).toBe(200)
+      expect(res.status).toBe(201)
       expect(user.receivedInvites.length).toBe(0);
       expect(user.chatMemberships.length).toBe(1);
     });

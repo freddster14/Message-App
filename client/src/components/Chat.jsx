@@ -20,7 +20,7 @@ export default function Chat({ chat, setChat }) {
 
   const getChatName = (name) => {
     if(!name && chat.isGroup) {
-      let chatName = null;
+      let chatName = '';
       for(let n of chat.members) {
         n === chat.members[chat.members.length - 1] 
           ? chatName += n.name 
@@ -146,7 +146,7 @@ export default function Chat({ chat, setChat }) {
             }
           </div>
         </div>
-        <p>{error}</p>
+        <p id="error-p">{error}</p>
         {!leftChat 
           ?  <form onSubmit={sendMessage}>
               <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />

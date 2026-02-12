@@ -2,13 +2,14 @@ import { useState } from "react";
 import apiFetch from "../api/client";
 
 export default function NewChat({ u, setError }) {
-  const [isActive, setIsActive] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
   const [value, setValue] = useState("Send Invite");
 
   const handleInvite = async (e, recipientId) => {
     e.preventDefault();
-    if(isActive) return;
-    setIsActive(true);
+    if(isSubmit) return;
+    setError()
+    setIsSubmit(true);
     setValue("Invited");
     try {
       const options = {
@@ -17,7 +18,9 @@ export default function NewChat({ u, setError }) {
       }
       await apiFetch('/invite', options);
     } catch (error) {
+      setValue("Send Invite")
       setError(error);
+      setIsSubmit(false)
     }
   }
   return (

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import NewChat from "../NewChat";
 import Search from "../Search";
+import Error from "../../pages/Error";
 
 export default function SearchedNewChats() {
   const [users, setUsers] = useState([]);
-  const [error, setError] = useState("");
+  const [error, setError] = useState();
   const [active, setActive] = useState(false);
 
   const close = () => {
@@ -13,6 +14,7 @@ export default function SearchedNewChats() {
   }
   return (
     <>
+      {error && <Error setError={setError} error={error} style={'modal'}/>}
       {active 
       ? 
         <div>

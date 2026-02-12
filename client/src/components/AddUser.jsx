@@ -34,16 +34,16 @@ export default function AddUser({ chat, setChat, setError }) {
       const data = await apiFetch(`/chat/${chat.id}`)
       setChat(data.chat)
       setRefreshTrigger(prev => prev + 1);
-      setSelectedUsers([])
+      setSelectedUsers([]);
+      setFiltered([])
     } catch (error) {
       setActive(true)
-      setError(error)
+      setError(error.message)
     }
   }
 
   const getUsers = async () => {
     try {
-  
       const data = await apiFetch(`/user/friends/${chat.id}`);
       setUsers(data.users);
       setActive(true)
@@ -55,6 +55,7 @@ export default function AddUser({ chat, setChat, setError }) {
   const handleData = (data, searched) => {
     return data.filter(c => c.name.includes(searched))
   }
+
   return (
     <>
       <button onClick={getUsers}>Add user</button>
@@ -68,7 +69,7 @@ export default function AddUser({ chat, setChat, setError }) {
         />
         <form onSubmit={handleAdd}>
             <div>
-              {filtered.length > 0 && typeof filtered !== 'string' && (
+              {typeof filtered !== 'string' && (
                 filtered.map(u => (
                     <div type="checkbox" key={u.id + "gs"}>
                       <input type="checkbox" value={u.id} onChange={handleSelect}/>

@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.MODE === 'production' ? '/api' : 'http://localhost:3000';
+const API_URL = import.meta.env.MODE === 'production' ? '/api' : import.meta.env.VITE_API_URL;
 class ApiError extends Error {
   constructor(message, status) {
     super(message);

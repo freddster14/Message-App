@@ -23,7 +23,7 @@ export default function Inbox() {
       setError(error)
     }
   }
-  console.log(error)
+
   return(
     <>
       {error && <Error error={error} setError={setError} style={'modal'}/>}

@@ -33,6 +33,9 @@ Full-stack messaging application showcasing WebSocket-based real-time communicat
 - 20+ test suite covering authentication, messaging, invites, and group chats
 - Automated tests run on every commit via CI/CD
 
+**Blog Post**
+👉 [View Blog](https://dev.to/freddster14/solving-cross-origin-cookies-54j8)
+
 ## Quick Start
 
 ### Prerequisites

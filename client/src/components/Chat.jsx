@@ -112,50 +112,49 @@ export default function Chat({ chat, setChat }) {
   }
 
   return (
-    <>
-      <div>
+    <div className={styles.openChat}>
+      <div className={styles.chatInfo}>
+        <h2>{getChatName(chat.name)}</h2>
         <div>
-          <h2>{getChatName(chat.name)}</h2>
           {!leftChat && <button onClick={handleLeave}>Leave Chat</button>}
           { chat.isGroup && !leftChat && <AddUser chat={chat} setChat={setChat} setError={setError}/>}
         </div>
-        <div className={styles.messages}>
-          <div>
-          </div>
-          {newMessages.map(m => 
-            (
-            <div key={m.id}>
-              <p><strong>{m.author.name}:</strong> {m.text}</p>
-            </div>
-            )
-          )}
-          {chat.messages.map(m => (
-            <div key={m.id}>
-              <p><strong>{m.author.name}:</strong> {m.text}</p>
-            </div>
-          ))}
-          {loadedMessages.map(m => (
-            <div key={m.id}>
-              <p><strong>{m.author.name}:</strong> {m.text}</p>
-            </div>
-          ))}
-          <div>
-            { isMoreMessages 
-              ? <button onClick={handleCursor}>^</button>
-              : <div>Created at: {new Date(chat.createdAt).toLocaleDateString()}</div>
-            }
-          </div>
+      </div>
+      <div className={styles.messages}>
+        <div>
         </div>
-        <p id="error-p">{error}</p>
-        {!leftChat 
-          ?  <form onSubmit={sendMessage}>
-              <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
-              <button onClick={sendMessage}>Send</button>
-            </form>
-          : <div>You left the chat. Chat will delete on exit!</div>
-        }
-      </div> 
-    </>
+        {newMessages.map(m => 
+          (
+          <div key={m.id}>
+            <p><strong>{m.author.name}:</strong> {m.text}</p>
+          </div>
+          )
+        )}
+        {chat.messages.map(m => (
+          <div key={m.id}>
+            <p><strong>{m.author.name}:</strong> {m.text}</p>
+          </div>
+        ))}
+        {loadedMessages.map(m => (
+          <div key={m.id}>
+            <p><strong>{m.author.name}:</strong> {m.text}</p>
+          </div>
+        ))}
+        <div>
+          { isMoreMessages 
+            ? <button onClick={handleCursor}>^</button>
+            : <div>Created at: {new Date(chat.createdAt).toLocaleDateString()}</div>
+          }
+        </div>
+      </div>
+      <p id="error-p">{error}</p>
+      {!leftChat 
+        ?  <form onSubmit={sendMessage}>
+            <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
+            <button onClick={sendMessage}>Send</button>
+          </form>
+        : <div>You left the chat. Chat will delete on exit!</div>
+      }
+    </div> 
   )
-
 }

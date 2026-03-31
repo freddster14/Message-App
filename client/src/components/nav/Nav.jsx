@@ -4,6 +4,7 @@ import Inbox from "./Inbox";
 import apiFetch from "../../api/client";
 import NewGroupChat from "./NewGroupChat";
 import SearchedNewChats from "./SearchedNewChats";
+import styles from "../../styles/Nav.module.css"
 
 export default function Nav() {
   const { user, setUser } = useAuth();
@@ -20,15 +21,16 @@ export default function Nav() {
   }
 
   return (
-    <nav>
-      <h1>Message App</h1>
+    <nav className={styles.nav}>
     {user 
     ? <div>
       <h1>{user.name}</h1>
-      <SearchedNewChats />
-      <NewGroupChat />
-      <Inbox />
-      <button onClick={handleLogout}>Logout</button>
+      <div className={styles.buttons}>
+        <SearchedNewChats />
+        <NewGroupChat />
+        <Inbox />
+        <button onClick={handleLogout}>Logout</button>
+      </div>
     </div>
     : <div>
        <Link to='/sign-up'>Sign Up</Link>

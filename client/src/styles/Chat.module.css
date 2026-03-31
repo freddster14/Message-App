@@ -36,7 +36,8 @@
 .openChat {
   width: 69%;
   height: 100%;
-  padding: 0 1rem;
+  padding: 1rem;
+  border-radius: .7rem;
 }
 
 

@@ -10,3 +10,9 @@
   left: 50%;
   top: 40%;
 }
+
+.divider {
+  height: auto;
+  padding: 1px;
+  background-color: rgb(122, 122, 122);
+}

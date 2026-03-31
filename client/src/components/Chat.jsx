@@ -149,9 +149,9 @@ export default function Chat({ chat, setChat }) {
       </div>
       <p id="error-p">{error}</p>
       {!leftChat 
-        ?  <form onSubmit={sendMessage}>
-            <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
-            <button onClick={sendMessage}>Send</button>
+        ?  <form onSubmit={sendMessage} className={styles.form}>
+            <input className={styles.inputMessage} type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
+            <button onClick={sendMessage}>→</button>
           </form>
         : <div>You left the chat. Chat will delete on exit!</div>
       }

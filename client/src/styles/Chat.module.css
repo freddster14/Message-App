@@ -67,6 +67,17 @@
 
 }
 
-.input {
+.form  {
+  display: flex;
+  gap: .5rem;
+}
 
+.inputMessage {
+  width: 100%;
+}
+
+.form button {
+  font-size: 1.4rem;
+  padding: .2rem .3rem;
+  padding-top: 0;
 }

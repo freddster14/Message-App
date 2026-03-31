@@ -114,7 +114,15 @@ export default function Chat({ chat, setChat }) {
   return (
     <div className={styles.openChat}>
       <div className={styles.chatInfo}>
-        <h2>{getChatName(chat.name)}</h2>
+        <div className={styles.chatName}>
+          { chat.isGroup
+            ? <p className={styles.defaultAvatar}>GC</p>
+            : chat.members[0].avatarUrl === null
+            ? <div className={styles.defaultAvatar}>{chat.members[0].name[0]}</div>
+            : <img src={chat.members[0].avatarUrl} alt={chat.members[0].name} />
+          }
+          <h2>{getChatName(chat.name)}</h2>
+        </div>
         <div>
           {!leftChat && <button onClick={handleLeave}>Leave Chat</button>}
           { chat.isGroup && !leftChat && <AddUser chat={chat} setChat={setChat} setError={setError}/>}

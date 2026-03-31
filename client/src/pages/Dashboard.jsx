@@ -45,7 +45,7 @@ export default function Dashboard() {
     <div className={styles.main}>
       <AllChats chats={chats} setChat={setChat}  />
       {chat ? <Chat chat={chat} setChat={setChat} />
-      : <div>Select a chat to view messages</div>  
+      : <p className={styles.placeholder}>Select a chat to view messages</p>  
     }
     </div>
   )

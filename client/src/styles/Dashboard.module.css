@@ -4,3 +4,9 @@
   gap: 1rem;
   height: auto;
 }
+
+.placeholder {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+}

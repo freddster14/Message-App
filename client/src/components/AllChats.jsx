@@ -2,6 +2,7 @@ import { useState } from "react";
 import apiFetch from "../api/client";
 import { socket } from "../socket";
 import Error from "../pages/Error";
+import styles from "../styles/Chat.module.css"
 
 export default function AllChats(props) {
   const [prev, setPrev] = useState(null);
@@ -27,15 +28,15 @@ export default function AllChats(props) {
   }
 
   return (
-    <div>
+    <div className={styles.allChats}>
       { error && <Error setError={setError} error={error} style={'modal'}/> }
       { props.chats.length > 0
         ? props.chats.map(c => {
           if(!c.isGroup) {
             return (
-              <div key={"c" + c.id} onClick={() => openChat(c.id)}>
+              <div key={"c" + c.id} onClick={() => openChat(c.id)} className={styles.chat}>
                 {c.members[0].avatarUrl === null
-                ? <div className="default-avatar">{c.members[0].name[0]}</div>
+                ? <div className={styles.defaultAvatar}>{c.members[0].name[0]}</div>
                 : <img src={c.members[0].avatarUrl} alt={c.members[0].name} />
                 }
                 <p>{c.members[0].name}</p>
@@ -52,8 +53,8 @@ export default function AllChats(props) {
               }
             }
             return (
-              <div key={"c" + c.id} onClick={() => openChat(c.id)}>
-                <p>Group img</p>
+              <div key={"c" + c.id} onClick={() => openChat(c.id)} className={styles.chat}>
+                <p className={styles.defaultAvatar}>GC</p>
                 <p>{name}</p>
               </div>
             )

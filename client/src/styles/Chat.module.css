@@ -21,6 +21,7 @@
 
 
 .defaultAvatar {
+  color: white;
   border-radius: 100%;
   background-color: rgb(122, 122, 122);
   width: 2.5rem;
@@ -32,21 +33,15 @@
 
 }
 
-
 .openChat {
   width: 69%;
-  height: 100%;
-  padding: 1rem;
-  border-radius: .7rem;
 }
-
-
 
 .chatInfo {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+  padding: 0 1rem;
 }
 
 .chatInfo div {
@@ -60,18 +55,45 @@
 }
 
 
-
-
 .messages {
   display: flex;
   flex-direction: column-reverse;
-  height: calc(100vh - 265px);
   overflow-y: auto;
+  gap: .75rem;
+  height: calc(100% - 100px);
 }
 
 .message {
-
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  width: fit-content;
+  padding: .2rem .5rem;
+  max-width: 75%;
 }
+
+.message div {
+  width: 2rem;
+  height: 2rem;
+}
+
+.message p {
+  color: white;
+  background-color: rgb(46, 60, 255);
+  padding: .3rem .5rem;
+  border-radius: .5rem;
+  margin: 0;
+}
+
+.userMessage {
+  margin-left: auto;
+}
+
+.userMessage p {
+  background-color: rgb(122, 122, 122);
+}
+
+
 
 .form  {
   display: flex;

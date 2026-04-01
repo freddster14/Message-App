@@ -3,12 +3,12 @@
   padding: 1rem 0;
   gap: 1rem;
   height: auto;
+  padding-left: .5rem;
+  height: calc(100vh - 138px);
 }
 
 .placeholder {
-  position: absolute;
-  left: 50%;
-  top: 40%;
+  margin: auto;
 }
 
 .divider {

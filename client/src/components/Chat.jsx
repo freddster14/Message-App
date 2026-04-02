@@ -131,9 +131,19 @@ export default function Chat({ chat, setChat }) {
       <div className={styles.messages}>
         {newMessages.map(m => 
           (
-          <div key={m.id} className={`${styles.message} ${styles.userMessage}`} >
-            <p>{m.text}</p>
-          </div>
+            user.id === m.author.id
+            ? 
+              (<div key={m.id} className={`${styles.message} ${styles.userMessage}`} >
+                <p>{m.text}</p>
+              </div>)
+            : (<div key={m.id} className={styles.message}>
+                {m.author.avatarUrl === null
+                  ? <div className={styles.defaultAvatar}>{m.author.name[0]}</div>
+                  : <img src={m.author.avatarUrl} alt={m.author.name} />
+                }
+                <p>{m.text}</p>
+              </div>
+              )
           )
         )}
         {chat.messages.map(m => (
@@ -143,9 +153,9 @@ export default function Chat({ chat, setChat }) {
               <p>{m.text}</p>
             </div>)
           : (<div key={m.id} className={styles.message}>
-              {chat.members[0].avatarUrl === null
-                ? <div className={styles.defaultAvatar}>{chat.members[0].name[0]}</div>
-                : <img src={chat.members[0].avatarUrl} alt={chat.members[0].name} />
+              {m.author.avatarUrl === null
+                ? <div className={styles.defaultAvatar}>{m.author.name[0]}</div>
+                : <img src={m.author.avatarUrl} alt={m.author.name} />
               }
               <p>{m.text}</p>
             </div>
@@ -161,9 +171,9 @@ export default function Chat({ chat, setChat }) {
             )
           : (
             <div key={m.id} className={styles.message}>
-              {chat.members[0].avatarUrl === null
-                ? <div className={styles.defaultAvatar}>{chat.members[0].name[0]}</div>
-                : <img src={chat.members[0].avatarUrl} alt={chat.members[0].name} />
+              {m.author.avatarUrl === null
+                ? <div className={styles.defaultAvatar}>{m.author.name[0]}</div>
+                : <img src={m.author.avatarUrl} alt={m.author.name} />
               }
               <p>{m.text}</p>
               </div>

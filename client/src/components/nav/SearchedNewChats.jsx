@@ -12,6 +12,7 @@ export default function SearchedNewChats() {
     setActive(false);
     setUsers([])
   }
+
   return (
     <>
       {error && <Error setError={setError} error={error} style={'modal'}/>}

@@ -23,16 +23,16 @@ export default function Nav() {
   return (
     <nav className={styles.nav}>
     {user 
-    ? <div>
+    ? <div className={styles.user}>
       <h1>{user.name}</h1>
-      <div className={styles.buttons}>
+      <div className={styles.mainButtons}>
         <SearchedNewChats />
         <NewGroupChat />
         <Inbox />
         <button onClick={handleLogout}>Logout</button>
       </div>
     </div>
-    : <div>
+    : <div className={styles.buttons}>
        <Link to='/sign-up'>Sign Up</Link>
       <Link to='/sign-in'>Sign In</Link>
     </div>

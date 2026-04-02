@@ -12,7 +12,6 @@ export default function Home() {
     <>
       <div>
        <h2>Join our new message platform!</h2>
-
       </div>
     </>
   )

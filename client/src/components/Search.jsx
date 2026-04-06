@@ -29,7 +29,6 @@ export default function Search({ url, setData }) {
   return(
     <> 
       <div>
-        <p>search</p>
         <input type="text" value={searched} onChange={(e) => setSearched(e.target.value)} />
         <p>{error}</p>
       </div>

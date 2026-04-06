@@ -1,12 +1,29 @@
 .nav {
- 
-  width: 100%;
-  justify-content: center;
+  width: 96%;
+  margin: 0 auto;
 }
 
-.nav div {
+.nav .user {
   display: flex;
-  
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.newChatUsers {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.actions {
+  padding: .3rem .6rem;
 }
 
 .nav h1 {
@@ -14,6 +31,130 @@
   font-size: 2rem;
 }
 
-.buttons {
-  margin-left: auto;
+.nav .mainButtons {
+  display: flex;
+  gap: .5rem;
+  justify-content: end;
+}
+
+.nav .buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttons a {
+  text-decoration: none;
+  color: inherit;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background-color: #1a1a1a;
+}
+
+.buttons a:hover {
+  background-color: #333;
+}
+
+
+.modal {
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  background-color: #1a1a1a;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+}
+.defaultAvatar {
+  color: white;
+  border-radius: 100%;
+  background-color: rgb(122, 122, 122);
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+
+.modal h2 {
+  margin: 0;
+}
+
+
+
+.modal p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 400;
+}
+.modal .userInput {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: .5rem;
+
+}
+.modal input[type="text"] {
+  width: 90%;
+  text-align: center;
+  padding: .3rem;
+  margin: 1rem 0;
+}
+
+.userInput p {
+  margin-right: auto;
+}
+
+
+.close {
+  position: absolute;
+  top: .2rem;
+  right: .5rem;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #333;
+}
+
+/* Gorup Chat Modal */
+
+.selected {
+  display: flex;
+  font-size: .8rem;
+  margin-bottom: .8rem;
+  gap: .3rem;
+}
+.selectedUser div {
+  width: 2rem;
+  cursor: pointer;
+  height: auto;
+  aspect-ratio: 1/1;
+}
+
+.selectedUser {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  border: 1px rgb(134, 134, 134) solid;
+  border-radius: 2rem;
+  padding-right: .3rem;
+}
+
+.selectedUser p {
+  font-size: .8rem;
+
+}
+.selectedUser:hover {
+  background-color: rgb(134, 134, 134);
 }

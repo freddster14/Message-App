@@ -2,6 +2,7 @@ import { useState } from "react";
 import NewChat from "../NewChat";
 import Search from "../Search";
 import Error from "../../pages/Error";
+import styles from "../../styles/Nav.module.css"
 
 export default function SearchedNewChats() {
   const [users, setUsers] = useState([]);
@@ -12,17 +13,20 @@ export default function SearchedNewChats() {
     setActive(false);
     setUsers([])
   }
+
   return (
     <>
       {error && <Error setError={setError} error={error} style={'modal'}/>}
       {active 
       ? 
-        <div>
-          <button onClick={close}>Close</button>
+        <div className={styles.modal}>
+          <h2>Invite users to chat</h2>
+          <p>Search for users below to start a new chat.</p>
+          <button className={styles.close} onClick={close}>✖</button>
           <Search url={'/user/search-new/'} setData={setUsers}/>
           {users.length > 0 && typeof users !== 'string' &&
 
-            <div>
+            <div className={styles.newChatUsers}>
               {users.map(u => (
                 <div key={"u" + u.id}>
                   <NewChat u={u} setError={setError} />

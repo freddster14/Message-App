@@ -59,7 +59,7 @@ export default function Chat({ chat, setChat }) {
   
   //grab more messages on cursor
   const handleCursor = async () => {
-    const cursor = loadedMessages.length > 0 
+    const cursor = loadedMessages.length > 0
       ? loadedMessages[loadedMessages.length - 1].id  
       : chat.messages[chat.messages.length - 1].id
     try {
@@ -114,31 +114,70 @@ export default function Chat({ chat, setChat }) {
   return (
     <div className={styles.openChat}>
       <div className={styles.chatInfo}>
-        <h2>{getChatName(chat.name)}</h2>
+        <div className={styles.chatName}>
+          { chat.isGroup
+            ? <p className={styles.defaultAvatar}>GC</p>
+            : chat.members[0].avatarUrl === null
+            ? <div className={styles.defaultAvatar}>{chat.members[0].name[0]}</div>
+            : <img src={chat.members[0].avatarUrl} alt={chat.members[0].name} />
+          }
+          <h2>{getChatName(chat.name)}</h2>
+        </div>
         <div>
           {!leftChat && <button onClick={handleLeave}>Leave Chat</button>}
           { chat.isGroup && !leftChat && <AddUser chat={chat} setChat={setChat} setError={setError}/>}
         </div>
       </div>
       <div className={styles.messages}>
-        <div>
-        </div>
         {newMessages.map(m => 
           (
-          <div key={m.id}>
-            <p><strong>{m.author.name}:</strong> {m.text}</p>
-          </div>
+            user.id === m.author.id
+            ? 
+              (<div key={m.id} className={`${styles.message} ${styles.userMessage}`} >
+                <p>{m.text}</p>
+              </div>)
+            : (<div key={m.id} className={styles.message}>
+                {m.author.avatarUrl === null
+                  ? <div className={styles.defaultAvatar}>{m.author.name[0]}</div>
+                  : <img src={m.author.avatarUrl} alt={m.author.name} />
+                }
+                <p>{m.text}</p>
+              </div>
+              )
           )
         )}
         {chat.messages.map(m => (
-          <div key={m.id}>
-            <p><strong>{m.author.name}:</strong> {m.text}</p>
-          </div>
+          user.id === m.authorId
+          ? 
+            (<div key={m.id} className={`${styles.message} ${styles.userMessage}`} >
+              <p>{m.text}</p>
+            </div>)
+          : (<div key={m.id} className={styles.message}>
+              {m.author.avatarUrl === null
+                ? <div className={styles.defaultAvatar}>{m.author.name[0]}</div>
+                : <img src={m.author.avatarUrl} alt={m.author.name} />
+              }
+              <p>{m.text}</p>
+            </div>
+            )
+            
         ))}
         {loadedMessages.map(m => (
-          <div key={m.id}>
-            <p><strong>{m.author.name}:</strong> {m.text}</p>
-          </div>
+          user.id === m.authorId
+          ? (
+            <div key={m.id} className={`${styles.message} ${styles.userMessage}`}>
+              <p>{m.text}</p>
+            </div>
+            )
+          : (
+            <div key={m.id} className={styles.message}>
+              {m.author.avatarUrl === null
+                ? <div className={styles.defaultAvatar}>{m.author.name[0]}</div>
+                : <img src={m.author.avatarUrl} alt={m.author.name} />
+              }
+              <p>{m.text}</p>
+              </div>
+            )
         ))}
         <div>
           { isMoreMessages 

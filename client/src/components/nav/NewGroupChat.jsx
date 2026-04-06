@@ -2,12 +2,12 @@ import { useEffect, useState } from "react"
 import apiFetch from "../../api/client";
 import { useChats } from "../../context/ChatProvider";
 import SearchData from "../SearchChats";
-import Error from "../../pages/Error";
+import styles from "../../styles/Nav.module.css"
 
 export default function NewGroupChat() {
   const { setRefreshTrigger } = useChats();
   const [data, setData] = useState([]);
-  const [filtered, setFiltered] = useState([])
+  const [filtered, setFiltered] = useState("loading")
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [error, setError] = useState();
   const [active, setActive] = useState(false);
@@ -31,9 +31,10 @@ export default function NewGroupChat() {
       return;
     }
     try {
+      const selectedUsersIds = selectedUsers.map(c => c.members[0].id)
       const options = {
         method: "POST",
-        body: JSON.stringify({ usersId: selectedUsers})
+        body: JSON.stringify({ usersId: selectedUsersIds})
       }
       await apiFetch('/chat/group', options);
       setActive(false)
@@ -45,47 +46,67 @@ export default function NewGroupChat() {
   }
 
    const handleSelect = (e) => {
-    setSelectedUsers(prev => 
-    prev.includes(e.target.value)
-      ? prev.filter(id => id !== e.target.value)  // Remove
-      : [...prev, e.target.value]                  // Add
-  );
+    const id = parseInt(e.target.value)
+    
+    if(e.target.checked) {
+      const userToAdd = data.find(u => u.members[0].id === id)
+      setSelectedUsers(prev => [...prev, userToAdd])
+    } else {
+      setSelectedUsers(prev => prev.filter(u => u.members[0].id !== id))
+    }
   }
 
   const handleData = (data, searched) => {
-    return data.filter(c => c.isGroup ? c.name.includes(searched) : c.members[0].name.includes(searched))
+    return data.filter(c => !c.isGroup  && c.members[0].name.includes(searched))
   }
-
-
   if(!data) return null;
   return (
 
     <>
       {active && !error
-        ? <div>
-          <button onClick={() => setActive(false)}>Close</button>
+        ? <div className={styles.modal}>
+          <h2>Create group chat</h2>
+          <p>Select users to add to the group chat</p>
           <SearchData
           data={data}
           setData={setFiltered}
           handleData={handleData}
           />
+          <button className={styles.close} onClick={() => setActive(false)}>✖</button>
+          <div className={styles.selected}>
+            { selectedUsers.length > 0 && selectedUsers.map(c => (
+               <div
+               key={"c" + c.id}
+               className={styles.selectedUser}
+               onClick={() => setSelectedUsers(prev => prev.filter(u => u.id !== c.id))
+               }>
+               {c.members[0].avatarUrl === null
+               ? <div className={styles.defaultAvatar}>{c.members[0].name[0]}</div>
+               : <img src={c.members[0].avatarUrl} alt={c.members[0].name} />
+               }
+               <p>{c.members[0].name}</p>
+             </div>
+            ))}
+          </div>
+          
           <form onSubmit={handleSubmit}>
             <div>
-              {filtered.length > 0 ? (
-              filtered.map(u => {
+              { filtered === 'loading' && <p>Loading...</p>}
+              { filtered === 'none' && <p>No users found</p>}
+              { filtered !== 'loading' && filtered !== 'none' && filtered.length > 0 &&
+                filtered.map(u => {
                 if(!u.isGroup) 
                 return (
-                  <div type="checkbox" key={u.id + "gs"}>
-                    <input type="checkbox" value={u.members[0].id} onChange={handleSelect}/>
+                  <div className={styles.userInput} key={u.id + "gs"}>
                     {u.members[0].avatarUrl === null
-                    ? <div className="default-avatar">{u.members[0].name[0]}</div>
+                    ? <div className={styles.defaultAvatar}>{u.members[0].name[0]}</div>
                     : <img src={u.members[0].avatarUrl} alt={u.members[0].name} />
                     }
                     <p>{u.members[0].name}</p>
+                    <input type="checkbox" value={u.members[0].id} onChange={handleSelect} checked={selectedUsers.some(s => s.members[0].id === u.members[0].id)}/>
                   </div>
                 )
               })
-              ) : <p>No users. Invite people to create group chats with them.</p>
               }
             </div>
             <button type="submit">Create</button>

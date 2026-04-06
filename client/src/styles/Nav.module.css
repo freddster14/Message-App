@@ -22,6 +22,10 @@
   gap: .5rem;
 }
 
+.actions {
+  padding: .3rem .6rem;
+}
+
 .nav h1 {
   margin: 0;
   font-size: 2rem;

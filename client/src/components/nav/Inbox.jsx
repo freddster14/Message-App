@@ -2,6 +2,7 @@ import { useState } from "react"
 import apiFetch from "../../api/client";
 import Invite from "./Invite";
 import Error from "../../pages/Error";
+import styles from "../../styles/Nav.module.css";
 
 export default function Inbox() {
   const [invites, setInvites] = useState(null);
@@ -27,10 +28,11 @@ export default function Inbox() {
   return(
     <>
       {error && <Error error={error} setError={setError} style={'modal'}/>}
-      <button onClick={getInvites}>Inbox</button>
-      {active && 
-        <div>
-          <button onClick={() => setActive(false)}>✖</button>
+      {active ?
+        <div className={styles.modal}>
+          <h2>Inbox</h2>
+          <p style={{marginBottom: "1rem"}}>View your recent invites and more.</p>
+          <button className={styles.close} onClick={() => setActive(false)}>✖</button>
           {invites.length > 0
             ? invites.map(i => (
               <div key={"i" + i.id}>
@@ -40,6 +42,7 @@ export default function Inbox() {
           : <div>No invites</div>
           }
         </div>
+        :  <button onClick={getInvites}>Inbox</button>
       }
     </>
     

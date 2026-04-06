@@ -1,6 +1,7 @@
 import { useState } from "react";
 import apiFetch from "../../api/client";
 import { useChats } from "../../context/ChatProvider";
+import styles from "../../styles/Nav.module.css"
 
 export default function Invite({ i, setError }) {
   const { setRefreshTrigger } = useChats();
@@ -47,13 +48,18 @@ export default function Invite({ i, setError }) {
   return (
     <>
       {isActive && 
-        <div className="invite">
-          {i.avatarUrl ? <img src={i.avatarUrl}></img> : <div>{i.name[0]}</div>}
-          <div>
+        <div className={styles.user}>
+          <div className={styles.userInfo}>
+            {i.avatarUrl === null
+              ? <div className={styles.defaultAvatar}>{i.name[0]}</div>
+              : <img src={i.avatarUrl} alt={i.name} />
+            }
             <p>{i.name}</p>
           </div>
-          <button onClick={handleAccept}>Accept</button>
-          <button onClick={handleDecline}>X</button>
+          <div>
+            <button className={styles.actions} onClick={handleAccept}>✓</button>
+            <button className={styles.actions} onClick={handleDecline}>✖</button>
+          </div>
         </div>
       }
     </>

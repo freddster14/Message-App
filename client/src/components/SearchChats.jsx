@@ -5,7 +5,6 @@ export default function SearchData({ data, setData, handleData }) {
   const [searched, setSearched] = useState("");
 
   useEffect(() => {
-    console.log("ran2");
     setData('loading')
 
     const find = setTimeout(() => {

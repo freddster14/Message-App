@@ -109,3 +109,35 @@
 .close:hover {
   color: #333;
 }
+
+/* Gorup Chat Modal */
+
+.selected {
+  display: flex;
+  font-size: .8rem;
+  margin-bottom: .8rem;
+  gap: .3rem;
+}
+.selectedUser div {
+  width: 2rem;
+  cursor: pointer;
+  height: auto;
+  aspect-ratio: 1/1;
+}
+
+.selectedUser {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  border: 1px rgb(134, 134, 134) solid;
+  border-radius: 2rem;
+  padding-right: .3rem;
+}
+
+.selectedUser p {
+  font-size: .8rem;
+
+}
+.selectedUser:hover {
+  background-color: rgb(134, 134, 134);
+}

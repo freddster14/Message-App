@@ -31,9 +31,10 @@ export default function NewGroupChat() {
       return;
     }
     try {
+      const selectedUsersIds = selectedUsers.map(c => c.members[0].id)
       const options = {
         method: "POST",
-        body: JSON.stringify({ usersId: selectedUsers})
+        body: JSON.stringify({ usersId: selectedUsersIds})
       }
       await apiFetch('/chat/group', options);
       setActive(false)
@@ -45,15 +46,18 @@ export default function NewGroupChat() {
   }
 
    const handleSelect = (e) => {
-    setSelectedUsers(prev => 
-    prev.includes(e.target.value)
-      ? prev.filter(id => id !== e.target.value)  // Remove
-      : [...prev, e.target.value]                  // Add
-  );
+    const id = parseInt(e.target.value)
+    
+    if(e.target.checked) {
+      const userToAdd = data.find(u => u.members[0].id === id)
+      setSelectedUsers(prev => [...prev, userToAdd])
+    } else {
+      setSelectedUsers(prev => prev.filter(u => u.members[0].id !== id))
+    }
   }
 
   const handleData = (data, searched) => {
-    return data.filter(c => c.isGroup ? c.name.includes(searched) : c.members[0].name.includes(searched))
+    return data.filter(c => !c.isGroup  && c.members[0].name.includes(searched))
   }
   if(!data) return null;
   return (
@@ -69,6 +73,22 @@ export default function NewGroupChat() {
           handleData={handleData}
           />
           <button className={styles.close} onClick={() => setActive(false)}>✖</button>
+          <div className={styles.selected}>
+            { selectedUsers.length > 0 && selectedUsers.map(c => (
+               <div
+               key={"c" + c.id}
+               className={styles.selectedUser}
+               onClick={() => setSelectedUsers(prev => prev.filter(u => u.id !== c.id))
+               }>
+               {c.members[0].avatarUrl === null
+               ? <div className={styles.defaultAvatar}>{c.members[0].name[0]}</div>
+               : <img src={c.members[0].avatarUrl} alt={c.members[0].name} />
+               }
+               <p>{c.members[0].name}</p>
+             </div>
+            ))}
+          </div>
+          
           <form onSubmit={handleSubmit}>
             <div>
               { filtered === 'loading' && <p>Loading...</p>}
@@ -83,7 +103,7 @@ export default function NewGroupChat() {
                     : <img src={u.members[0].avatarUrl} alt={u.members[0].name} />
                     }
                     <p>{u.members[0].name}</p>
-                    <input type="checkbox" value={u.members[0].id} onChange={handleSelect}/>
+                    <input type="checkbox" value={u.members[0].id} onChange={handleSelect} checked={selectedUsers.some(s => s.members[0].id === u.members[0].id)}/>
                   </div>
                 )
               })

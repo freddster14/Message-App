@@ -9,6 +9,19 @@
   align-items: center;
   width: 100%;
 }
+
+.newChatUsers {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
 .nav h1 {
   margin: 0;
   font-size: 2rem;

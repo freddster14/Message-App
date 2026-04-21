@@ -2,6 +2,10 @@
 Full-stack messaging application showcasing WebSocket-based real-time communication, dual authentication strategy for cross-origin security, and cursor-based pagination.
 👉 [View deployed app](https://message-app-xi-two.vercel.app/)
 
+<div align="center">
+  <img src="./client/public/message-app.png" width="50%" />
+</div>
+
 ## Features
 
 **Real-Time Chats**

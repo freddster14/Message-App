@@ -1,9 +1,10 @@
 import { useState } from "react";
 import apiFetch from "../../api/client";
 import { useChats } from "../../context/ChatProvider";
+import { colorFor, initialsFor } from "../../utils/avatar";
 import styles from "../../styles/Nav.module.css"
 
-export default function Invite({ i, setError }) {
+export default function Invite({ i, setError, onResolved }) {
   const { setRefreshTrigger } = useChats();
   const [isSubmit, setIsSubmit] = useState(false)
   const [isActive, setIsActive] = useState(true);
@@ -19,6 +20,7 @@ export default function Invite({ i, setError }) {
       }
       await apiFetch('/invite/accept', options);
       setIsActive(false);
+      onResolved?.(i.id);
       setRefreshTrigger(prev => prev + 1)
     } catch (error) {
       setError(error)
@@ -38,31 +40,32 @@ export default function Invite({ i, setError }) {
       }
       await apiFetch('/invite/decline', options);
       setIsActive(false);
+      onResolved?.(i.id);
     } catch (error) {
       setError(error)
     } finally {
       setIsSubmit(false)
     }
   }
-  
+
   return (
     <>
-      {isActive && 
-        <div className={styles.user}>
+      {isActive &&
+        <div className={styles.row}>
           <div className={styles.userInfo}>
             {i.avatarUrl === null
-              ? <div className={styles.defaultAvatar}>{i.name[0]}</div>
-              : <img src={i.avatarUrl} alt={i.name} />
+              ? <div className={styles.defaultAvatar} style={{ background: colorFor(i.name) }}>{initialsFor(i.name)}</div>
+              : <div className={styles.defaultAvatar}><img src={i.avatarUrl} alt={i.name} /></div>
             }
             <p>{i.name}</p>
           </div>
-          <div>
-            <button className={styles.actions} onClick={handleAccept}>✓</button>
-            <button className={styles.actions} onClick={handleDecline}>✖</button>
+          <div className={styles.actions}>
+            <button className={styles.accept} onClick={handleAccept}>✓</button>
+            <button className={styles.decline} onClick={handleDecline}>✕</button>
           </div>
         </div>
       }
     </>
-    
+
   )
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import apiFetch from "../api/client";
+import { colorFor, initialsFor } from "../utils/avatar";
 import styles from "../styles/Nav.module.css"
 
 export default function NewChat({ u, setError }) {
@@ -25,16 +26,24 @@ export default function NewChat({ u, setError }) {
     }
   }
   return (
-    <div className={styles.user}>
+    <div className={styles.row}>
       <div className={styles.userInfo}>
         {u.avatarUrl === null
-          ? <div className={styles.defaultAvatar}>{u.name[0]}</div>
-          : <img src={u.avatarUrl} alt={u.name} />
+          ? <div className={styles.defaultAvatar} style={{ background: colorFor(u.name) }}>{initialsFor(u.name)}</div>
+          : <div className={styles.defaultAvatar}><img src={u.avatarUrl} alt={u.name} /></div>
         }
-        <p>{u.name}</p>
+        <div>
+          <p>{u.name}</p>
+          {u.bio && <div className={styles.bio}>{u.bio}</div>}
+        </div>
       </div>
-      <p>{u.bio}</p>
-      <button onClick={(e) => handleInvite(e, u.id)}>{value}</button>
+      <button
+        className={styles.inviteButton}
+        style={isSubmit ? { background: 'var(--surface-2)', color: 'var(--text-dim)' } : { background: 'var(--accent)', color: '#fff' }}
+        onClick={(e) => handleInvite(e, u.id)}
+      >
+        {value}
+      </button>
     </div>
   )
 }

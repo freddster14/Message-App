@@ -1,18 +1,13 @@
 .main {
   display: flex;
-  padding: 1rem 0;
-  gap: 1rem;
-  height: auto;
-  padding-left: .5rem;
-  height: calc(100vh - 138px);
+  height: calc(100vh - 72px);
+  min-height: 0;
+  background: var(--bg);
+  color: var(--text);
 }
 
 .placeholder {
   margin: auto;
-}
-
-.divider {
-  height: auto;
-  padding: 1px;
-  background-color: rgb(122, 122, 122);
+  color: var(--text-dim);
+  font-size: 14.5px;
 }

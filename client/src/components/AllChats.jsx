@@ -2,6 +2,7 @@ import { useState } from "react";
 import apiFetch from "../api/client";
 import { socket } from "../socket";
 import Error from "../pages/Error";
+import { colorFor, initialsFor } from "../utils/avatar";
 import styles from "../styles/Chat.module.css"
 
 export default function AllChats(props) {
@@ -30,16 +31,21 @@ export default function AllChats(props) {
   return (
     <div className={styles.allChats}>
       { error && <Error setError={setError} error={error} style={'modal'}/> }
+      <div className={styles.chatsLabel}>Chats</div>
       { props.chats.length > 0
         ? props.chats.map(c => {
+          const isActive = prev === c.id;
           if(!c.isGroup) {
+            const member = c.members[0];
             return (
-              <div key={"c" + c.id} onClick={() => openChat(c.id)} className={styles.chat}>
-                {c.members[0].avatarUrl === null
-                ? <div className={styles.defaultAvatar}>{c.members[0].name[0]}</div>
-                : <img src={c.members[0].avatarUrl} alt={c.members[0].name} />
+              <div key={"c" + c.id} onClick={() => openChat(c.id)} className={`${styles.chat} ${isActive ? styles.active : ''}`}>
+                {member.avatarUrl === null
+                ? <div className={styles.defaultAvatar} style={{ background: colorFor(member.name) }}>{initialsFor(member.name)}</div>
+                : <div className={styles.defaultAvatar}><img src={member.avatarUrl} alt={member.name} /></div>
                 }
-                <p>{c.members[0].name}</p>
+                <div className={styles.chatMeta}>
+                  <div className={styles.chatName}>{member.name}</div>
+                </div>
               </div>
             )
           } else {
@@ -47,21 +53,23 @@ export default function AllChats(props) {
             if(!c.name) {
               name = "";
               for(let n of c.members) {
-                n === c.members[c.members.length - 1] 
-                  ? name += n.name 
+                n === c.members[c.members.length - 1]
+                  ? name += n.name
                   : name += `${n.name}, `
               }
             }
             return (
-              <div key={"c" + c.id} onClick={() => openChat(c.id)} className={styles.chat}>
-                <p className={styles.defaultAvatar}>GC</p>
-                <p>{name}</p>
+              <div key={"c" + c.id} onClick={() => openChat(c.id)} className={`${styles.chat} ${isActive ? styles.active : ''}`}>
+                <div className={styles.defaultAvatar} style={{ background: 'var(--accent)' }}>GC</div>
+                <div className={styles.chatMeta}>
+                  <div className={styles.chatName}>{name}</div>
+                </div>
               </div>
             )
           }
         })
-      : <div>Invite people or accept invites to get chatting!</div>
-      }  
+      : <div className={styles.emptyChats}>Invite people or accept invites to get chatting!</div>
+      }
 
     </div>
   )

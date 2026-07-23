@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import apiFetch from "../../api/client";
 import { useChats } from "../../context/ChatProvider";
 import SearchData from "../SearchChats";
+import Modal from "../Modal";
+import { colorFor, initialsFor } from "../../utils/avatar";
 import styles from "../../styles/Nav.module.css"
 
 export default function NewGroupChat() {
@@ -25,7 +27,7 @@ export default function NewGroupChat() {
   }, [])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e?.preventDefault();
     if(selectedUsers.length < 2) {
       setError("Select at least two users");
       return;
@@ -45,10 +47,9 @@ export default function NewGroupChat() {
     }
   }
 
-   const handleSelect = (e) => {
-    const id = parseInt(e.target.value)
-    
-    if(e.target.checked) {
+   const handleSelect = (id) => {
+    const isSelected = selectedUsers.some(u => u.members[0].id === id);
+    if(!isSelected) {
       const userToAdd = data.find(u => u.members[0].id === id)
       setSelectedUsers(prev => [...prev, userToAdd])
     } else {
@@ -59,64 +60,71 @@ export default function NewGroupChat() {
   const handleData = (data, searched) => {
     return data.filter(c => !c.isGroup  && c.members[0].name.includes(searched))
   }
+
+  const errorMessage = error && (typeof error === 'string' ? error : error.message);
+
   if(!data) return null;
   return (
-
     <>
-      {active && !error
-        ? <div className={styles.modal}>
-          <h2>Create group chat</h2>
-          <p>Select users to add to the group chat</p>
-          <SearchData
-          data={data}
-          setData={setFiltered}
-          handleData={handleData}
-          />
-          <button className={styles.close} onClick={() => setActive(false)}>✖</button>
-          <div className={styles.selected}>
-            { selectedUsers.length > 0 && selectedUsers.map(c => (
-               <div
-               key={"c" + c.id}
-               className={styles.selectedUser}
-               onClick={() => setSelectedUsers(prev => prev.filter(u => u.id !== c.id))
-               }>
-               {c.members[0].avatarUrl === null
-               ? <div className={styles.defaultAvatar}>{c.members[0].name[0]}</div>
-               : <img src={c.members[0].avatarUrl} alt={c.members[0].name} />
-               }
-               <p>{c.members[0].name}</p>
-             </div>
-            ))}
-          </div>
-          
-          <form onSubmit={handleSubmit}>
-            <div>
-              { filtered === 'loading' && <p>Loading...</p>}
-              { filtered === 'none' && <p>No users found</p>}
-              { filtered !== 'loading' && filtered !== 'none' && filtered.length > 0 &&
-                filtered.map(u => {
-                if(!u.isGroup) 
-                return (
-                  <div className={styles.userInput} key={u.id + "gs"}>
-                    {u.members[0].avatarUrl === null
-                    ? <div className={styles.defaultAvatar}>{u.members[0].name[0]}</div>
-                    : <img src={u.members[0].avatarUrl} alt={u.members[0].name} />
-                    }
-                    <p>{u.members[0].name}</p>
-                    <input type="checkbox" value={u.members[0].id} onChange={handleSelect} checked={selectedUsers.some(s => s.members[0].id === u.members[0].id)}/>
-                  </div>
-                )
-              })
-              }
+      <button className={styles.textButton} onClick={() => { setError(); setActive(true); }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        New group
+      </button>
+      {active &&
+        <Modal
+          title="Create group chat"
+          subtitle="Pick at least two people to add."
+          onClose={() => setActive(false)}
+          footer={<button onClick={handleSubmit}>Create group chat</button>}
+        >
+          {selectedUsers.length > 0 &&
+            <div className={styles.selected}>
+              {selectedUsers.map(c => (
+                <div
+                  key={"c" + c.id}
+                  className={styles.selectedUser}
+                  onClick={() => setSelectedUsers(prev => prev.filter(u => u.id !== c.id))}
+                >
+                  {c.members[0].avatarUrl === null
+                    ? <div className={styles.defaultAvatar} style={{ background: colorFor(c.members[0].name) }}>{initialsFor(c.members[0].name)}</div>
+                    : <div className={styles.defaultAvatar}><img src={c.members[0].avatarUrl} alt={c.members[0].name} /></div>
+                  }
+                  <p>{c.members[0].name}</p>
+                </div>
+              ))}
             </div>
-            <button type="submit">Create</button>
-          </form>
+          }
+          <SearchData
+            data={data}
+            setData={setFiltered}
+            handleData={handleData}
+            placeholder="Search your contacts…"
+          />
+          {errorMessage && <p className={styles.bio} style={{ color: 'var(--danger)', marginTop: 8 }}>{errorMessage}</p>}
+          <div style={{ marginTop: 8 }}>
+            { filtered === 'loading' && <p className={styles.hint}>Loading...</p>}
+            { filtered === 'none' && <p className={styles.hint}>No users found</p>}
+            { filtered !== 'loading' && filtered !== 'none' && filtered.length > 0 &&
+              filtered.map(u => {
+              if(!u.isGroup)
+              return (
+                <div className={styles.checkRow} key={u.id + "gs"} onClick={() => handleSelect(u.members[0].id)}>
+                  {u.members[0].avatarUrl === null
+                    ? <div className={styles.defaultAvatar} style={{ background: colorFor(u.members[0].name) }}>{initialsFor(u.members[0].name)}</div>
+                    : <div className={styles.defaultAvatar}><img src={u.members[0].avatarUrl} alt={u.members[0].name} /></div>
+                  }
+                  <div className={styles.userInfo} style={{ flex: 1 }}><p>{u.members[0].name}</p></div>
+                  {(() => {
+                    const isSelected = selectedUsers.some(s => s.members[0].id === u.members[0].id);
+                    return <div className={`${styles.checkbox} ${isSelected ? styles.checked : ''}`}>{isSelected ? '✓' : ''}</div>;
+                  })()}
+                </div>
+              )
+            })
+            }
           </div>
-        : <button onClick={() => setActive(true)}>Create group chat</button>
+        </Modal>
       }
-      
     </>
-     
-    
   )
 }

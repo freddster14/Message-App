@@ -2,6 +2,7 @@ import { useState } from "react";
 import NewChat from "../NewChat";
 import Search from "../Search";
 import Error from "../../pages/Error";
+import Modal from "../Modal";
 import styles from "../../styles/Nav.module.css"
 
 export default function SearchedNewChats() {
@@ -17,30 +18,26 @@ export default function SearchedNewChats() {
   return (
     <>
       {error && <Error setError={setError} error={error} style={'modal'}/>}
-      {active 
-      ? 
-        <div className={styles.modal}>
-          <h2>Invite users to chat</h2>
-          <p>Search for users below to start a new chat.</p>
-          <button className={styles.close} onClick={close}>✖</button>
-          <Search url={'/user/search-new/'} setData={setUsers}/>
+      <button className={styles.textButton} onClick={() => setActive(true)}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Invite someone
+      </button>
+      {active &&
+        <Modal title="Invite someone" subtitle="Search for people to start a new chat." onClose={close}>
+          <div style={{ padding: "0 0 8px" }}>
+            <Search url={'/user/search-new/'} setData={setUsers}/>
+          </div>
           {users.length > 0 && typeof users !== 'string' &&
-
             <div className={styles.newChatUsers}>
               {users.map(u => (
-                <div key={"u" + u.id}>
-                  <NewChat u={u} setError={setError} />
-                </div>
+                <NewChat key={"u" + u.id} u={u} setError={setError} />
               ))}
             </div>
           }
-          {users === 'none' && <div>No user found</div>}
-          {users === 'loading' && <div>Loading...</div> }
-        </div>
-      : <button onClick={() => setActive(true)}>Invite someone</button>
+          {users === 'none' && <div className={styles.hint}>No user found</div>}
+          {users === 'loading' && <div className={styles.hint}>Loading...</div> }
+        </Modal>
       }
-      
     </>
-    
   )
 }

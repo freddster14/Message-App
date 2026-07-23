@@ -5,13 +5,16 @@ import './styles/index.css';
 import { AuthProvider } from './context/AuthContext.jsx';
 import router from './routes/AppRoutes.jsx';
 import { ChatProvider } from './context/ChatProvider.jsx';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
-      <ChatProvider>
-        <RouterProvider  router={router}/>
-      </ChatProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <ChatProvider>
+          <RouterProvider  router={router}/>
+        </ChatProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </StrictMode>,
 )

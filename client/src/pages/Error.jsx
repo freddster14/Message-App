@@ -1,5 +1,4 @@
 import { Link } from "react-router";
-import Nav from "../components/nav/Nav";
 
 export default function Error({ setError, error, style }) {
 

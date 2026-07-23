@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import Search from "./Search";
+import styles from "../styles/Nav.module.css"
 
-export default function SearchData({ data, setData, handleData }) {
+export default function SearchData({ data, setData, handleData, placeholder }) {
   const [searched, setSearched] = useState("");
 
   useEffect(() => {
@@ -25,6 +25,6 @@ export default function SearchData({ data, setData, handleData }) {
   }, [searched])
 
   return (
-    <input type="text" onChange={(e) => setSearched(e.target.value)} value={searched} />
+    <input className={styles.searchInput} type="text" placeholder={placeholder || "Search…"} onChange={(e) => setSearched(e.target.value)} value={searched} />
   )
 }

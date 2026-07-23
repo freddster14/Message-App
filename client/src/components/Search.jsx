@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import apiFetch from "../api/client";
-import NewChat from "./NewChat";
+import styles from "../styles/Nav.module.css";
 
 export default function Search({ url, setData }) {
   const [searched, setSearched] = useState("");
-  
+
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -27,11 +27,9 @@ export default function Search({ url, setData }) {
 
 
   return(
-    <> 
-      <div>
-        <input type="text" value={searched} onChange={(e) => setSearched(e.target.value)} />
-        <p>{error}</p>
-      </div>
+    <>
+      <input className={styles.searchInput} type="text" placeholder="Search by name…" value={searched} onChange={(e) => setSearched(e.target.value)} />
+      {error && <p className={styles.bio} style={{ color: 'var(--danger)' }}>{error}</p>}
     </>
   )
 }

@@ -1,0 +1,150 @@
+.page {
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px;
+}
+
+.heading {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  margin: 0 0 6px;
+}
+
+.subheading {
+  font-size: 13.5px;
+  color: var(--text-dim);
+  margin: 0 0 22px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.field input {
+  width: 100%;
+}
+
+.passwordRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.passwordRow input {
+  flex: 1;
+}
+
+.viewButton {
+  padding: 10px 14px;
+  font-size: 12.5px;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+  margin: 0;
+}
+
+.submit {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* Home landing */
+.hero {
+  text-align: center;
+  max-width: 480px;
+}
+
+.hero .heading {
+  font-size: 28px;
+}
+
+.hero .actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.hero .actions a {
+  text-decoration: none;
+  color: white;
+  background: var(--accent);
+  padding: 11px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.hero .actions a.secondary {
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+/* Edit profile */
+.editHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.editAvatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 22px;
+  overflow: hidden;
+}
+
+.editAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.closeRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}

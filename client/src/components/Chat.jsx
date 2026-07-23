@@ -1,12 +1,14 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import apiFetch from "../api/client";
 import { useAuth } from "../context/AuthContext";
 import { socket } from "../socket";
 import { useEffect } from "react";
-import SearchChats from "./SearchChats";
 import { useChats } from "../context/ChatProvider";
 import AddUser from "./AddUser";
+import { colorFor, initialsFor } from "../utils/avatar";
 import styles from "../styles/Chat.module.css"
+
+const formatTime = (iso) => iso ? new Date(iso).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : '';
 
 export default function Chat({ chat, setChat }) {
   const { user } = useAuth();
@@ -22,8 +24,8 @@ export default function Chat({ chat, setChat }) {
     if(!name && chat.isGroup) {
       let chatName = '';
       for(let n of chat.members) {
-        n === chat.members[chat.members.length - 1] 
-          ? chatName += n.name 
+        n === chat.members[chat.members.length - 1]
+          ? chatName += n.name
           : chatName += `${n.name}, `
       }
       return chatName || 'Just You';
@@ -31,15 +33,15 @@ export default function Chat({ chat, setChat }) {
     return chat.members[0].name;
   }
 
- 
+
   //receive message via socket
-  useEffect(() => {  
+  useEffect(() => {
     const handleNewMessage = (data) => {
       setNewMessages(prev => [data.message, ...prev]);
     };
-    
+
     socket.on('new_message', handleNewMessage);
-    
+
     return () => {
       socket.off('new_message', handleNewMessage);
     };
@@ -56,16 +58,16 @@ export default function Chat({ chat, setChat }) {
     }
     reset()
   }, [chat])
-  
+
   //grab more messages on cursor
   const handleCursor = async () => {
     const cursor = loadedMessages.length > 0
-      ? loadedMessages[loadedMessages.length - 1].id  
+      ? loadedMessages[loadedMessages.length - 1].id
       : chat.messages[chat.messages.length - 1].id
     try {
       const data = await apiFetch(`/chat/${chat.id}/${cursor}`);
       setLoadedMessages(prev => [...prev, ...data.messages]);
-      if (data.messages.length !== 20) setIsMoreMessages(false) 
+      if (data.messages.length !== 20) setIsMoreMessages(false)
     } catch (error) {
       setError(error.message);
     }
@@ -111,89 +113,74 @@ export default function Chat({ chat, setChat }) {
     }
   }
 
+  const renderMessage = (m) => {
+    const isMine = user.id === (m.authorId ?? m.author?.id);
+    if (isMine) {
+      return (
+        <div key={m.id} className={`${styles.message} ${styles.userMessage}`}>
+          <p>{m.text}</p>
+          {m.createdAt && <div className={styles.time}>{formatTime(m.createdAt)}</div>}
+        </div>
+      );
+    }
+    const authorName = m.author?.name || '';
+    const authorAvatarUrl = m.author?.avatarUrl;
+    return (
+      <div key={m.id} className={styles.message}>
+        {authorAvatarUrl === null || authorAvatarUrl === undefined
+          ? <div className={styles.defaultAvatar} style={{ background: authorName ? colorFor(authorName) : 'var(--accent)' }}>{authorName ? initialsFor(authorName) : ''}</div>
+          : <div className={styles.defaultAvatar}><img src={authorAvatarUrl} alt={authorName} /></div>
+        }
+        <div className={styles.messageBody}>
+          <div className={styles.author}>{authorName.split(' ')[0]}</div>
+          <p>{m.text}</p>
+          {m.createdAt && <div className={styles.time}>{formatTime(m.createdAt)}</div>}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.openChat}>
       <div className={styles.chatInfo}>
-        <div className={styles.chatName}>
+        <div className={styles.userSummary}>
           { chat.isGroup
-            ? <p className={styles.defaultAvatar}>GC</p>
+            ? <div className={styles.defaultAvatar} style={{ background: 'var(--accent)' }}>GC</div>
             : chat.members[0].avatarUrl === null
-            ? <div className={styles.defaultAvatar}>{chat.members[0].name[0]}</div>
-            : <img src={chat.members[0].avatarUrl} alt={chat.members[0].name} />
+            ? <div className={styles.defaultAvatar} style={{ background: colorFor(chat.members[0].name) }}>{initialsFor(chat.members[0].name)}</div>
+            : <div className={styles.defaultAvatar}><img src={chat.members[0].avatarUrl} alt={chat.members[0].name} /></div>
           }
-          <h2>{getChatName(chat.name)}</h2>
+          <div>
+            <h2>{getChatName(chat.name)}</h2>
+            {chat.isGroup && <div className={styles.subtitle}>{chat.members.length + 1} members</div>}
+          </div>
         </div>
-        <div>
-          {!leftChat && <button onClick={handleLeave}>Leave Chat</button>}
+        <div className={styles.headerActions}>
           { chat.isGroup && !leftChat && <AddUser chat={chat} setChat={setChat} setError={setError}/>}
+          {!leftChat && <button className={styles.leaveButton} onClick={handleLeave}>Leave chat</button>}
         </div>
       </div>
       <div className={styles.messages}>
-        {newMessages.map(m => 
-          (
-            user.id === m.author.id
-            ? 
-              (<div key={m.id} className={`${styles.message} ${styles.userMessage}`} >
-                <p>{m.text}</p>
-              </div>)
-            : (<div key={m.id} className={styles.message}>
-                {m.author.avatarUrl === null
-                  ? <div className={styles.defaultAvatar}>{m.author.name[0]}</div>
-                  : <img src={m.author.avatarUrl} alt={m.author.name} />
-                }
-                <p>{m.text}</p>
-              </div>
-              )
-          )
-        )}
-        {chat.messages.map(m => (
-          user.id === m.authorId
-          ? 
-            (<div key={m.id} className={`${styles.message} ${styles.userMessage}`} >
-              <p>{m.text}</p>
-            </div>)
-          : (<div key={m.id} className={styles.message}>
-              {m.author.avatarUrl === null
-                ? <div className={styles.defaultAvatar}>{m.author.name[0]}</div>
-                : <img src={m.author.avatarUrl} alt={m.author.name} />
-              }
-              <p>{m.text}</p>
-            </div>
-            )
-            
-        ))}
-        {loadedMessages.map(m => (
-          user.id === m.authorId
-          ? (
-            <div key={m.id} className={`${styles.message} ${styles.userMessage}`}>
-              <p>{m.text}</p>
-            </div>
-            )
-          : (
-            <div key={m.id} className={styles.message}>
-              {m.author.avatarUrl === null
-                ? <div className={styles.defaultAvatar}>{m.author.name[0]}</div>
-                : <img src={m.author.avatarUrl} alt={m.author.name} />
-              }
-              <p>{m.text}</p>
-              </div>
-            )
-        ))}
+        {newMessages.map(renderMessage)}
+        {chat.messages.map(renderMessage)}
+        {loadedMessages.map(renderMessage)}
         <div>
-          { isMoreMessages 
-            ? <button onClick={handleCursor}>^</button>
-            : <div>Created at: {new Date(chat.createdAt).toLocaleDateString()}</div>
+          { isMoreMessages
+            ? <button className={styles.loadMore} onClick={handleCursor}>Load earlier messages</button>
+            : <div className={styles.createdLabel}>Chat created {new Date(chat.createdAt).toLocaleDateString()}</div>
           }
         </div>
       </div>
       <p id="error-p">{error}</p>
-      {!leftChat 
+      {!leftChat
         ?  <form onSubmit={sendMessage} className={styles.form}>
-            <input className={styles.inputMessage} type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
-            <button onClick={sendMessage}>→</button>
+            <input className={styles.inputMessage} placeholder="Write a message…" type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
+            <button type="submit" className={styles.sendButton} aria-label="Send">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
           </form>
-        : <div>You left the chat. Chat will delete on exit!</div>
+        : <div className={styles.leftChat}>You left the chat. Chat will delete on exit!</div>
       }
-    </div> 
+    </div>
   )
 }

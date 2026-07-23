@@ -1,160 +1,324 @@
 .nav {
-  width: 96%;
-  margin: 0 auto;
+  height: 72px;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
 }
 
-.nav .user {
+.logo {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.02em;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 8px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.logoMark {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 15px;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  position: relative;
+}
+
+.textButton {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 13.5px;
+}
+
+.badge {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  border: 1.5px solid var(--surface);
+}
+
+.divider {
+  width: 1px;
+  height: 26px;
+  background: var(--border);
+  margin: 0 4px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-right: 2px;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+.avatar img {
   width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.buttons a {
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.buttons a:hover {
+  background: var(--surface-2);
+}
+
+/* shared row/list styles used inside modals across nav components */
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.userInfo p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.defaultAvatar {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border-radius: 50%;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.defaultAvatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 8px;
+  border-radius: 12px;
+  gap: 10px;
+}
+
+.row:hover {
+  background: var(--surface-2);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actions button {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  padding: 0;
+  border-radius: 9px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.accept {
+  border: none;
+  background: var(--accent);
+  color: white;
+}
+
+.decline {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
 }
 
 .newChatUsers {
   display: flex;
   flex-direction: column;
-  gap: .5rem;
+  gap: 4px;
 }
 
-.userInfo {
+.bio {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inviteButton {
+  padding: 7px 13px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+/* checkbox rows: new group / add member */
+.checkRow {
   display: flex;
   align-items: center;
-  gap: .5rem;
-}
-
-.actions {
-  padding: .3rem .6rem;
-}
-
-.nav h1 {
-  margin: 0;
-  font-size: 2rem;
-}
-
-.nav .mainButtons {
-  display: flex;
-  gap: .5rem;
-  justify-content: end;
-}
-
-.nav .buttons {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  justify-content: center;
-}
-
-.buttons a {
-  text-decoration: none;
-  color: inherit;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  background-color: #1a1a1a;
-}
-
-.buttons a:hover {
-  background-color: #333;
-}
-
-
-.modal {
-  position: fixed;
-  left: 50%;
-  top: 40%;
-  transform: translate(-50%, -50%);
-  background-color: #1a1a1a;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-}
-.defaultAvatar {
-  color: white;
-  border-radius: 100%;
-  background-color: rgb(122, 122, 122);
-  width: 2.5rem;
-  height: 2.5rem;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-}
-
-
-.modal h2 {
-  margin: 0;
-}
-
-
-
-.modal p {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 400;
-}
-.modal .userInput {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: .5rem;
-
-}
-.modal input[type="text"] {
-  width: 90%;
-  text-align: center;
-  padding: .3rem;
-  margin: 1rem 0;
-}
-
-.userInput p {
-  margin-right: auto;
-}
-
-
-.close {
-  position: absolute;
-  top: .2rem;
-  right: .5rem;
-  padding: 0;
-  margin: 0;
-  background-color: transparent;
-  border: none;
-  font-size: 1.5rem;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: 12px;
   cursor: pointer;
 }
 
-.close:hover {
-  color: #333;
+.checkRow:hover {
+  background: var(--surface-2);
 }
 
-/* Gorup Chat Modal */
+.checkRow .userInfo {
+  flex: 1;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+}
+
+.checkbox.checked {
+  border-color: var(--accent);
+  background: var(--accent);
+}
 
 .selected {
   display: flex;
-  font-size: .8rem;
-  margin-bottom: .8rem;
-  gap: .3rem;
-}
-.selectedUser div {
-  width: 2rem;
-  cursor: pointer;
-  height: auto;
-  aspect-ratio: 1/1;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
 }
 
 .selectedUser {
   display: flex;
   align-items: center;
-  gap: .3rem;
-  border: 1px rgb(134, 134, 134) solid;
-  border-radius: 2rem;
-  padding-right: .3rem;
+  gap: 6px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px 4px 4px;
+  cursor: pointer;
+}
+
+.selectedUser .defaultAvatar {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  font-size: 10px;
 }
 
 .selectedUser p {
-  font-size: .8rem;
-
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 600;
 }
-.selectedUser:hover {
-  background-color: rgb(134, 134, 134);
+
+.searchInput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.hint {
+  padding: 8px 8px 4px;
+  font-size: 13px;
+  color: var(--text-dim);
 }

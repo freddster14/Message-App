@@ -87,15 +87,6 @@ input[type="password"]:focus {
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 8px; }
 
-.pageLoading {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-dim);
-  font-size: 14.5px;
-}
-
 #error {
   max-width: 460px;
   margin: 10vh auto;

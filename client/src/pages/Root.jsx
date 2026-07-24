@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 export default function Root() {
   const { loading } = useAuth();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="pageLoading">Loading...</div>;
   return(
     <>
       <Nav />

@@ -80,6 +80,7 @@ export default function Chat({ chat, setChat }) {
       author: { id: user.id, name: user.name },
       id: `new${newMessages.length}`,
       text: message,
+      createdAt: new Date().toISOString(),
     };
     const temp = { messages: [...newMessages], message};
     setNewMessages( prev => [formattedMessage, ...prev])

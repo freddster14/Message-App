@@ -11,6 +11,7 @@ export default function Dashboard() {
   const { refreshTrigger } = useChats();
   const [chats, setChats] = useState("load");
   const [chat, setChat] = useState();
+  const [chatLoading, setChatLoading] = useState(false);
   const [error, setError] = useState()
 
   useEffect(() => { 
@@ -38,15 +39,18 @@ export default function Dashboard() {
   }
 
   if (chats === "load") {
-    return <div className={styles.placeholder}>Loading...</div>;
+    return <div className={styles.main}><div className={styles.placeholder}>Loading...</div></div>;
   }
 
   return (
     <div className={styles.main}>
-      <AllChats chats={chats} setChat={setChat}  />
-      {chat ? <Chat chat={chat} setChat={setChat} />
-      : <p className={styles.placeholder}>Select a chat to view messages</p>
-    }
+      <AllChats chats={chats} setChat={setChat} setChatLoading={setChatLoading} />
+      {chatLoading
+        ? <div className={styles.placeholder}>Loading chat...</div>
+        : chat
+        ? <Chat chat={chat} setChat={setChat} />
+        : <p className={styles.placeholder}>Select a chat to view messages</p>
+      }
     </div>
   )
 }

@@ -16,15 +16,17 @@ export default function AllChats(props) {
     setIsSubmit(true);
     if(prev)  socket.emit("leave_chat", prev);
     setError()
+    setPrev(chatId)
+    props.setChatLoading(true)
     try {
       socket.emit('join_chat', chatId)
       const data = await apiFetch(`/chat/${chatId}`)
       props.setChat(data.chat);
-      setPrev(chatId)
     } catch (error) {
       setError(error)
     } finally {
       setIsSubmit(false)
+      props.setChatLoading(false)
     }
   }
 

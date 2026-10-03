@@ -29,7 +29,7 @@ Now in the terminal configure the backend
 
 Run Prisma database migrations
 ```bash
-  npx prisma migrate dev
+  npx prisma migrate deploy
 ```
 
 Generate Prisma Client
